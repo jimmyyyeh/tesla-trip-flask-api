@@ -61,15 +61,15 @@ class PayloadSchema:
 
     TRIP = Schema({
         'mileage': int,
-        'consumption': float,
-        'total': float,
+        'consumption': Or(float, int),
+        'total': Or(float, int),
         'start': str,
         'end': str,
         'start_battery_level': int,
         'end_battery_level': int,
         'is_charge': bool,
         'charge': Or(int, None),
-        'fee': Or(float, None),
+        'fee': Or(float, int, None),
         'final_battery_level': int,
     })
 

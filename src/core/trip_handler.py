@@ -20,9 +20,10 @@ from tesla_trip_common.models import Trip
 
 class TripHandler:
     @classmethod
-    def create_trip(cls, payload):
+    def create_trip(cls, user_id, payload):
         for trip in payload:
             trip_ = Trip(
+                user_id=user_id,
                 mileage=trip['mileage'],
                 consumption=trip['consumption'],
                 total=trip['total'],
