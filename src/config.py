@@ -33,3 +33,8 @@ class Config:
     }
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JSON_AS_ASCII = False
+
+    # JWT
+    ACCESS_TOKEN_EXPIRE_TIME = 60 * 5
+    REFRESH_TOKEN_EXPIRE_TIME = 60 * 60 * 24  # 一天
+    SALT = os.environ['SALT']

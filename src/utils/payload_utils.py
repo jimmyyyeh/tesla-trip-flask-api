@@ -42,6 +42,11 @@ class PayloadUtils:
 
 
 class PayloadSchema:
+    SIGN_IN = Schema({
+        'username': str,
+        'password': str,
+    })
+
     TRIP = Schema({
         'mileage': int,
         'consumption': float,
@@ -53,7 +58,7 @@ class PayloadSchema:
         'is_charge': bool,
         'charge': Or(int, None),
         'fee': Or(float, None),
-        'final_battery_level': int
+        'final_battery_level': int,
     })
 
     CREATE_TRIP = Schema(
