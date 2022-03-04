@@ -18,7 +18,7 @@
 from functools import wraps
 
 from flask import request
-from schema import Schema, Optional, Or
+from schema import Schema, Optional, Or, And
 
 
 class PayloadUtils:
@@ -42,4 +42,20 @@ class PayloadUtils:
 
 
 class PayloadSchema:
-    ...
+    TRIP = Schema({
+        'mileage': int,
+        'consumption': float,
+        'total': float,
+        'start': str,
+        'end': str,
+        'start_battery_level': int,
+        'end_battery_level': int,
+        'is_charge': bool,
+        'charge': Or(int, None),
+        'fee': Or(float, None),
+        'final_battery_level': int
+    })
+
+    CREATE_TRIP = Schema(
+        And(list, lambda x: list(map(PayloadSchema.TRIP.validate, x))),
+    )
