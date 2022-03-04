@@ -38,3 +38,12 @@ def sign_in(payload):
         password=payload['password']
     )
     return ResponseHandler.package_result(result=result)
+
+
+@app.route('/refresh-token', methods=['POST'])
+@PayloadUtils.validate(PayloadSchema.REFRESH_TOKEN)
+def refresh_token(payload):
+    result = UserHandler.refresh_token(
+        refresh_token=payload['refresh_token'],
+    )
+    return ResponseHandler.package_result(result=result)

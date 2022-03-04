@@ -47,6 +47,10 @@ class PayloadSchema:
         'password': str,
     })
 
+    REFRESH_TOKEN = Schema({
+        'refresh_token': str,
+    })
+
     CREATE_CAR = Schema({
         'model': str,
         'spec': str,
@@ -60,6 +64,7 @@ class PayloadSchema:
     })
 
     TRIP = Schema({
+        'car_id': int,
         'mileage': int,
         'consumption': Or(float, int),
         'total': Or(float, int),
@@ -71,6 +76,7 @@ class PayloadSchema:
         'charge': Or(int, None),
         'fee': Or(float, int, None),
         'final_battery_level': int,
+        'trip_date': str,
     })
 
     CREATE_TRIP = Schema(

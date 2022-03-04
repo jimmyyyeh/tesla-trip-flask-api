@@ -51,3 +51,14 @@ class UserHandler:
             'refresh_token': refresh_token
         })
         return result
+
+    @staticmethod
+    def refresh_token(refresh_token):
+        result = AuthTool.decode_refresh_token(token=refresh_token)
+        token = AuthTool.get_access_token(**result)
+        refresh_token = AuthTool.get_refresh_token(**result)
+        result.update({
+            'token': token,
+            'refresh_token': refresh_token
+        })
+        return result
