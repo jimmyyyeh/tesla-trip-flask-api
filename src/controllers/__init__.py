@@ -16,6 +16,7 @@
 """
 
 from controllers.administrative_district_routes import *
+from controllers.car_routes import *
 from controllers.charger_routes import *
 from controllers.trip_routes import *
 from controllers.user_routes import *

@@ -15,15 +15,41 @@
     God Bless,Never Bug
 """
 from datetime import timedelta, datetime
+from functools import wraps
 
 import jwt
+from flask import request
 
 from app import bcrypt, config
+from tesla_trip_common.models import User
 from utils.errors import ValidationError
 from utils.error_codes import ErrorCodes
 
 
 class AuthTool:
+    @classmethod
+    def sign_in(cls):
+        def real_decorator(method, **kwargs):
+            @wraps(method)
+            def wrapper(*args, **kwargs):
+                token = request.headers.get('Authorization')
+                if not token:
+                    raise ValidationError(error_code=ErrorCodes.token_missing,
+                                          error_msg='token missing')
+                token_content = cls.decode_access_token(token=token)
+                id_ = token_content.get('id')
+                user = User.query.filter(
+                    User.id == id_
+                ).first()
+                if not user:
+                    raise ValidationError(error_code=ErrorCodes.USER_NOT_EXIST,
+                                          error_msg='user not exist')
+                return method(*args, **kwargs, user=user)
+
+            return wrapper
+
+        return real_decorator
+
     @staticmethod
     def encrypt_password(password):
         return bcrypt.generate_password_hash(password).decode('utf-8')
@@ -45,9 +71,9 @@ class AuthTool:
         try:
             return jwt.decode(jwt=token, key=salt, algorithm='HS256')
         except jwt.DecodeError:
-            raise ValidationError(error_code=ErrorCodes.INVALID_ACCESS_TOKEN)
+            raise ValidationError(error_code=ErrorCodes.INVALID_TOKEN, error_msg='invalid token')
         except jwt.ExpiredSignatureError:
-            raise ValidationError(error_code=ErrorCodes.ACCESS_TOKEN_IS_EXPIRED)
+            raise ValidationError(error_code=ErrorCodes.TOKEN_EXPIRED, error_msg='token expired')
 
     @classmethod
     def get_access_token(cls, **kwargs):

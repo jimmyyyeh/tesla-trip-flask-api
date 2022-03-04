@@ -47,6 +47,18 @@ class PayloadSchema:
         'password': str,
     })
 
+    CREATE_CAR = Schema({
+        'model': str,
+        'spec': str,
+        'manufacture_date': str,
+    })
+
+    UPDATE_CAR = Schema({
+        'model': str,
+        'spec': str,
+        'manufacture_date': str,
+    })
+
     TRIP = Schema({
         'mileage': int,
         'consumption': float,

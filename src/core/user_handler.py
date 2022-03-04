@@ -44,8 +44,8 @@ class UserHandler:
             'sex': user.sex,
             'email': user.email,
         }
-        token = AuthTool.get_access_token(result=result)
-        refresh_token = AuthTool.get_refresh_token(result=result)
+        token = AuthTool.get_access_token(**result)
+        refresh_token = AuthTool.get_refresh_token(**result)
         result.update({
             'token': token,
             'refresh_token': refresh_token
