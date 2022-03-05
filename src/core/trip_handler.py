@@ -103,9 +103,9 @@ class TripHandler:
                 start_battery_level=trip['start_battery_level'],
                 end_battery_level=trip['end_battery_level'],
                 is_charge=trip['is_charge'],
-                charger_id=trip['charger_id'],
-                charge=trip['charge'],
-                fee=trip['fee'],
+                charger_id=trip.get('charger_id'),
+                charge=trip.get('charge'),
+                fee=trip.get('fee'),
                 final_battery_level=trip['final_battery_level'],
                 trip_date=trip['trip_date']
             )
