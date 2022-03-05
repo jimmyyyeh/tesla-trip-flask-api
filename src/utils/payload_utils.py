@@ -73,6 +73,7 @@ class PayloadSchema:
         'start_battery_level': int,
         'end_battery_level': int,
         'is_charge': bool,
+        'charger_id': Or(int, None),
         'charge': Or(int, None),
         'fee': Or(float, int, None),
         'final_battery_level': int,

@@ -15,16 +15,26 @@
     God Bless,Never Bug
 """
 from app import db
-from tesla_trip_common.models import Trip, Car
+from tesla_trip_common.models import Trip, Car, SuperCharger
 from utils.tools import Tools
 
 
 class TripHandler:
     @staticmethod
-    def get_trips(user_id, page, per_page):
+    def get_trips(user_id, page, per_page, charger, start, end, model, spec):
         filter_ = list()
         if user_id:
             filter_.append(Trip.user_id == user_id)
+        if charger:
+            filter_.append(SuperCharger.id == charger)
+        if start:
+            filter_.append(Trip.start.like(f'%{start}%'))
+        if end:
+            filter_.append(Trip.end.like(f'%{end}%'))
+        if model:
+            filter_.append(Car.model.like(f'%{model}%'))
+        if spec:
+            filter_.append(Car.spec.like(f'%{spec}%'))
         trips = db.session.query(
             Trip.id,
             Trip.mileage,
@@ -44,6 +54,8 @@ class TripHandler:
             Car.manufacture_date
         ).outerjoin(
             Car, Car.id == Trip.car_id
+        ).outerjoin(
+            SuperCharger, SuperCharger.id == Trip.charger_id
         ).filter(
             *filter_
         ).paginate(
@@ -91,6 +103,7 @@ class TripHandler:
                 start_battery_level=trip['start_battery_level'],
                 end_battery_level=trip['end_battery_level'],
                 is_charge=trip['is_charge'],
+                charger_id=trip['charger_id'],
                 charge=trip['charge'],
                 fee=trip['fee'],
                 final_battery_level=trip['final_battery_level'],

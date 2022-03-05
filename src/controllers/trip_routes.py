@@ -31,6 +31,11 @@ def get_trip(user, payload, user_id=None):
         user_id=user_id,
         page=int(payload.get('page', 1)),
         per_page=int(payload.get('per_page', 10)),
+        charger=payload.get('charger'),
+        start=payload.get('start'),
+        end=payload.get('end'),
+        model=payload.get('model'),
+        spec=payload.get('spec'),
     )
     return ResponseHandler.package_result(result=result, pager=pager)
 
