@@ -17,6 +17,7 @@
 
 from app import app
 from core.user_handler import UserHandler
+from utils.auth_tool import AuthTool
 from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
@@ -41,6 +42,18 @@ def sign_in(payload):
     result = UserHandler.sign_in(
         username=payload['username'],
         password=payload['password']
+    )
+    return ResponseHandler.package_result(result=result)
+
+
+@app.route('/profile', methods=['PUT'])
+@AuthTool.sign_in()
+@PayloadUtils.validate(PayloadSchema.UPDATE_PROFILE)
+def update_profile(user, payload):
+    result = UserHandler.update_profile(
+        user_id=user.id,
+        nickname=payload.get('nickname'),
+        email=payload.get('email'),
     )
     return ResponseHandler.package_result(result=result)
 

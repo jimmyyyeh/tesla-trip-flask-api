@@ -58,6 +58,11 @@ class PayloadSchema:
         'sex': And(str, lambda x: x in Const.Sex.get_elements()),
     }, ignore_extra_keys=True)
 
+    UPDATE_PROFILE = Schema({
+        Optional('email'): Or(str, None),
+        Optional('nickname'): Or(str, None),
+    }, ignore_extra_keys=True)
+
     REFRESH_TOKEN = Schema({
         'refresh_token': str,
     }, ignore_extra_keys=True)

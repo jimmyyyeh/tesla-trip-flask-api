@@ -87,6 +87,38 @@ class UserHandler:
         return result
 
     @staticmethod
+    def update_profile(user_id, nickname, email):
+        user = User.query.filter(
+            User.id == user_id
+        ).first()
+        if not user:
+            raise NotFoundError(
+                error_msg='user not exist',
+                error_code=ErrorCodes.USER_NOT_EXIST
+            )
+        if nickname:
+            user.nickname = nickname
+        if email:
+            user.email = email
+        db.session.commit()
+        result = {
+            'id': user.id,
+            'username': user.username,
+            'nickname': user.nickname,
+            'birthday': user.birthday,
+            'sex': user.sex,
+            'email': user.email,
+        }
+        Tools.serialize_result(dict_=result)
+        token = AuthTool.get_access_token(**result)
+        refresh_token = AuthTool.get_refresh_token(**result)
+        result.update({
+            'token': token,
+            'refresh_token': refresh_token
+        })
+        return result
+
+    @staticmethod
     def refresh_token(refresh_token):
         result = AuthTool.decode_refresh_token(token=refresh_token)
         token = AuthTool.get_access_token(**result)
