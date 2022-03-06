@@ -21,13 +21,18 @@ from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
 
-# @app.route('/sign-up', methods=['POST'])
-# @PayloadUtils.validate(PayloadSchema.SIGN_UP)
-# def sign_up(payload):
-#     result = UserHandler.sign_up(
-#
-#     )
-#     return ResponseHandler.package_result(result=result)
+@app.route('/sign-up', methods=['POST'])
+@PayloadUtils.validate(PayloadSchema.SIGN_UP)
+def sign_up(payload):
+    result = UserHandler.sign_up(
+        username=payload['username'],
+        password=payload['password'],
+        nickname=payload.get('nickname'),
+        email=payload['email'],
+        age=payload['age'],
+        sex=payload['sex'],
+    )
+    return ResponseHandler.package_result(result=result)
 
 
 @app.route('/sign-in', methods=['POST'])

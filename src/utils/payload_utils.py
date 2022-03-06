@@ -20,6 +20,8 @@ from functools import wraps
 from flask import request
 from schema import Schema, Optional, Or, And
 
+from utils.const import Const
+
 
 class PayloadUtils:
     @staticmethod
@@ -45,23 +47,32 @@ class PayloadSchema:
     SIGN_IN = Schema({
         'username': str,
         'password': str,
-    })
+    }, ignore_extra_keys=True)
+
+    SIGN_UP = Schema({
+        'username': str,
+        'password': str,
+        Optional('nickname'): Or(str, None),
+        'email': str,
+        'age': int,
+        'sex': And(str, lambda x: x in Const.Sex.get_elements()),
+    }, ignore_extra_keys=True)
 
     REFRESH_TOKEN = Schema({
         'refresh_token': str,
-    })
+    }, ignore_extra_keys=True)
 
     CREATE_CAR = Schema({
         'model': str,
         'spec': str,
         'manufacture_date': str,
-    })
+    }, ignore_extra_keys=True)
 
     UPDATE_CAR = Schema({
         'model': str,
         'spec': str,
         'manufacture_date': str,
-    })
+    }, ignore_extra_keys=True)
 
     TRIP = Schema({
         'car_id': int,
@@ -77,7 +88,7 @@ class PayloadSchema:
         Optional('charge'): Or(int, None),
         Optional('fee'): Or(float, int, None),
         'trip_date': str,
-    })
+    }, ignore_extra_keys=True)
 
     CREATE_TRIP = Schema(
         And(list, lambda x: list(map(PayloadSchema.TRIP.validate, x))),
