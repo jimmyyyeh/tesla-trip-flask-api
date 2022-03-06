@@ -14,6 +14,8 @@
         ┗┻┛    ┗┻┛
     God Bless,Never Bug
 """
+from datetime import datetime, timedelta
+
 from app import db
 from tesla_trip_common.models import Trip, Car, SuperCharger
 from utils.tools import Tools
@@ -22,7 +24,11 @@ from utils.tools import Tools
 class TripHandler:
     @staticmethod
     def get_trips(user_id, page, per_page, charger, start, end, model, spec):
-        filter_ = list()
+        now_ = datetime.now()
+        filter_ = [
+            Trip.create_datetime >= now_ - timedelta(days=365)
+        ]
+        # 限制近一年 避免資料太多
         if user_id:
             filter_.append(Trip.user_id == user_id)
         if charger:
@@ -58,6 +64,8 @@ class TripHandler:
             SuperCharger, SuperCharger.id == Trip.charger_id
         ).filter(
             *filter_
+        ).order_by(
+            Trip.create_datetime.desc()
         ).paginate(
             page=page,
             per_page=per_page
