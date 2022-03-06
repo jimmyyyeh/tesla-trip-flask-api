@@ -29,7 +29,7 @@ def sign_up(payload):
         password=payload['password'],
         nickname=payload.get('nickname'),
         email=payload['email'],
-        age=payload['age'],
+        birthday=payload['birthday'],
         sex=payload['sex'],
     )
     return ResponseHandler.package_result(result=result)

@@ -54,7 +54,7 @@ class PayloadSchema:
         'password': str,
         Optional('nickname'): Or(str, None),
         'email': str,
-        'age': int,
+        'birthday': str,
         'sex': And(str, lambda x: x in Const.Sex.get_elements()),
     }, ignore_extra_keys=True)
 

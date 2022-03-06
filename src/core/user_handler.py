@@ -19,11 +19,12 @@ from tesla_trip_common.models import User
 from utils.auth_tool import AuthTool
 from utils.error_codes import ErrorCodes
 from utils.errors import NotFoundError, ValidationError
+from utils.tools import Tools
 
 
 class UserHandler:
     @staticmethod
-    def sign_up(username, password, nickname, email, age, sex):
+    def sign_up(username, password, nickname, email, birthday, sex):
         user = User.query.filter(
             User.username == username
         ).first()
@@ -37,7 +38,7 @@ class UserHandler:
             password=AuthTool.encrypt_password(password=password),
             nickname=nickname or username,
             email=email,
-            age=age,
+            birthday=birthday,
             sex=sex,
         )
         db.session.add(user)
@@ -46,10 +47,11 @@ class UserHandler:
             'id': user.id,
             'username': user.username,
             'nickname': user.nickname,
-            'age': user.age,
+            'birthday': user.birthday,
             'sex': user.sex,
             'email': user.email,
         }
+        Tools.serialize_result(dict_=result)
         return result
 
     @staticmethod
@@ -71,10 +73,11 @@ class UserHandler:
             'id': user.id,
             'username': user.username,
             'nickname': user.nickname,
-            'age': user.age,
+            'birthday': user.birthday,
             'sex': user.sex,
             'email': user.email,
         }
+        Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)
         refresh_token = AuthTool.get_refresh_token(**result)
         result.update({
