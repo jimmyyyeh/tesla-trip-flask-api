@@ -76,7 +76,6 @@ class PayloadSchema:
         Optional('charger_id'): Or(int, None),
         Optional('charge'): Or(int, None),
         Optional('fee'): Or(float, int, None),
-        'final_battery_level': int,
         'trip_date': str,
     })
 

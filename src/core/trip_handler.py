@@ -47,11 +47,11 @@ class TripHandler:
             Trip.is_charge,
             Trip.charge,
             Trip.fee,
-            Trip.final_battery_level,
             Trip.trip_date,
             Car.model,
             Car.spec,
-            Car.manufacture_date
+            Car.manufacture_date,
+            SuperCharger.name,
         ).outerjoin(
             Car, Car.id == Trip.car_id
         ).outerjoin(
@@ -81,9 +81,9 @@ class TripHandler:
                 'is_charge': trip.is_charge,
                 'charge': trip.charge,
                 'fee': trip.fee,
-                'final_battery_level': trip.final_battery_level,
                 'trip_date': trip.trip_date,
-                'car': f'{trip.model}/{trip.spec}/{trip.trip_date.strftime("%F")}'
+                'car': f'{trip.model}/{trip.spec}/{trip.trip_date.strftime("%F")}',
+                'charger': trip.name
             }
             Tools.serialize_result(dict_=result)
             results.append(result)
@@ -106,7 +106,6 @@ class TripHandler:
                 charger_id=trip.get('charger_id'),
                 charge=trip.get('charge'),
                 fee=trip.get('fee'),
-                final_battery_level=trip['final_battery_level'],
                 trip_date=trip['trip_date']
             )
             db.session.add(trip_)
