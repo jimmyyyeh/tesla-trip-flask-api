@@ -50,6 +50,7 @@ class UserHandler:
             'birthday': user.birthday,
             'sex': user.sex,
             'email': user.email,
+            'point': user.point,
         }
         Tools.serialize_result(dict_=result)
         return result
@@ -76,6 +77,7 @@ class UserHandler:
             'birthday': user.birthday,
             'sex': user.sex,
             'email': user.email,
+            'point': user.point,
         }
         Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)
@@ -108,6 +110,7 @@ class UserHandler:
             'birthday': user.birthday,
             'sex': user.sex,
             'email': user.email,
+            'point': user.point,
         }
         Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)
