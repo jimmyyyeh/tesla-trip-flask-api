@@ -45,7 +45,7 @@ def get_trip(user, payload, user_id=None):
 @PayloadUtils.validate(PayloadSchema.CREATE_TRIP)
 def create_trip(user, payload):
     result = TripHandler.create_trip(
-        user_id=user.id,
+        user=user,
         payload=payload
     )
     return ResponseHandler.package_result(result=result)

@@ -89,6 +89,20 @@ class UserHandler:
         return result
 
     @staticmethod
+    def get_profile(user):
+        result = {
+            'id': user.id,
+            'username': user.username,
+            'nickname': user.nickname,
+            'birthday': user.birthday,
+            'sex': user.sex,
+            'email': user.email,
+            'point': user.point,
+        }
+        Tools.serialize_result(dict_=result)
+        return result
+
+    @staticmethod
     def update_profile(user_id, nickname, email):
         user = User.query.filter(
             User.id == user_id

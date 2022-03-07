@@ -98,10 +98,10 @@ class TripHandler:
         return results, pager
 
     @staticmethod
-    def create_trip(user_id, payload):
+    def create_trip(user, payload):
         for trip in payload:
             trip_ = Trip(
-                user_id=user_id,
+                user_id=user.id,
                 car_id=trip['car_id'],
                 mileage=trip['mileage'],
                 consumption=trip['consumption'],
@@ -117,4 +117,5 @@ class TripHandler:
                 trip_date=trip['trip_date']
             )
             db.session.add(trip_)
+            user.point += 1
         db.session.commit()

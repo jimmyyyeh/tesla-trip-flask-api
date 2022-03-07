@@ -46,6 +46,15 @@ def sign_in(payload):
     return ResponseHandler.package_result(result=result)
 
 
+@app.route('/profile', methods=['GET'])
+@AuthTool.sign_in()
+def get_profile(user):
+    result = UserHandler.get_profile(
+        user=user,
+    )
+    return ResponseHandler.package_result(result=result)
+
+
 @app.route('/profile', methods=['PUT'])
 @AuthTool.sign_in()
 @PayloadUtils.validate(PayloadSchema.UPDATE_PROFILE)
