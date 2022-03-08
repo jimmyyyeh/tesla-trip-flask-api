@@ -18,7 +18,7 @@
 from functools import wraps
 
 from flask import request
-from schema import Schema, Optional, Or, And
+from schema import Schema, Optional, Or, And, Regex
 
 from utils.const import Const
 
@@ -44,6 +44,8 @@ class PayloadUtils:
 
 
 class PayloadSchema:
+    _EMAIL_PATTERN = r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
+
     SIGN_IN = Schema({
         'username': str,
         'password': str,
@@ -53,7 +55,7 @@ class PayloadSchema:
         'username': str,
         'password': str,
         Optional('nickname'): Or(str, None),
-        'email': str,
+        'email': Regex(_EMAIL_PATTERN),
         'birthday': str,
         'sex': And(str, lambda x: x in Const.Sex.get_elements()),
     }, ignore_extra_keys=True)
@@ -63,7 +65,7 @@ class PayloadSchema:
     }, ignore_extra_keys=True)
 
     UPDATE_PROFILE = Schema({
-        Optional('email'): Or(str, None),
+        Optional('email'): Or(Regex(_EMAIL_PATTERN), None),
         Optional('nickname'): Or(str, None),
     }, ignore_extra_keys=True)
 
