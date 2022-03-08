@@ -14,24 +14,91 @@
         ┗┻┛    ┗┻┛
     God Bless,Never Bug
 """
-from app import db
+
+from secrets import token_hex
+from threading import Thread
+
+from app import app, db, config
 from tesla_trip_common.models import User
 from utils.auth_tool import AuthTool
 from utils.error_codes import ErrorCodes
 from utils.errors import NotFoundError, ValidationError
+from utils.redis_handler import RedisHandler
 from utils.tools import Tools
+from utils.mail_handler import MailHandler
 
 
 class UserHandler:
     @staticmethod
-    def sign_up(username, password, nickname, email, birthday, sex):
+    def _send_verify_mail(email, id_):
+        verify_token = token_hex(16)
+        RedisHandler.set_verify_token(
+            verify_token=verify_token,
+            id_=id_
+        )
+        html = f"""
+                <h1>歡迎註冊</h1>
+                <body>
+                    <p>歡迎您註冊Tesla Trip，請點選以下連結以進行驗證:</p>
+                    <a href='{config['API_DOMAIN']}/verify?token={verify_token}'>驗證連結</a>
+                </body>
+                """
+        with app.app_context():
+            MailHandler.send_mail(
+                title='Tesla Trip 驗證信件',
+                recipients=[email],
+                html=html
+            )
+
+    @staticmethod
+    def verify(verify_token):
+        id_ = RedisHandler.get_verify_token(
+            verify_token=verify_token
+        )
+        if not id_:
+            raise ValidationError(
+                error_msg='verify token not found',
+                error_code=ErrorCodes.VERIFY_TOKEN_NOT_FOUND
+            )
+        user = User.query.filter(
+            User.id == id_
+        ).first()
+        if not user:
+            raise NotFoundError(
+                error_msg='username not exists',
+                error_code=ErrorCodes.USER_NOT_EXISTS
+            )
+        user.is_verified = True
+        db.session.commit()
+        return True
+
+    @classmethod
+    def resend_verify(cls, username):
+        user = User.query.filter(
+            User.username == username
+        ).first()
+        if not user:
+            raise NotFoundError(
+                error_msg='username not exists',
+                error_code=ErrorCodes.USER_NOT_EXISTS
+            )
+        thread = Thread(
+            target=cls._send_verify_mail,
+            args=(user.email, user.id,)
+        )
+        thread.start()
+        return True
+
+    @classmethod
+    def sign_up(cls, username, password, nickname, email, birthday, sex):
+
         user = User.query.filter(
             User.username == username
         ).first()
         if user:
             raise ValidationError(
                 error_msg='username already exists',
-                error_code=ErrorCodes.USER_ALREADY_EXIST
+                error_code=ErrorCodes.USER_ALREADY_EXISTS
             )
         user = User(
             username=username,
@@ -42,7 +109,7 @@ class UserHandler:
             sex=sex,
         )
         db.session.add(user)
-        db.session.commit()
+        db.session.flush()
         result = {
             'id': user.id,
             'username': user.username,
@@ -51,8 +118,15 @@ class UserHandler:
             'sex': user.sex,
             'email': user.email,
             'point': user.point,
+            'is_verified': user.is_verified,
         }
         Tools.serialize_result(dict_=result)
+        thread = Thread(
+            target=cls._send_verify_mail,
+            args=(email, user.id,)
+        )
+        thread.start()
+        db.session.commit()
         return result
 
     @staticmethod
@@ -62,8 +136,8 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='user not exist',
-                error_code=ErrorCodes.USER_NOT_EXIST
+                error_msg='user not exists',
+                error_code=ErrorCodes.USER_NOT_EXISTS
             )
         if not AuthTool.decrypt_password(db_password=user.password, password=password):
             raise ValidationError(
@@ -78,6 +152,7 @@ class UserHandler:
             'sex': user.sex,
             'email': user.email,
             'point': user.point,
+            'is_verified': user.is_verified,
         }
         Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)
@@ -98,6 +173,7 @@ class UserHandler:
             'sex': user.sex,
             'email': user.email,
             'point': user.point,
+            'is_verified': user.is_verified,
         }
         Tools.serialize_result(dict_=result)
         return result
@@ -109,8 +185,8 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='user not exist',
-                error_code=ErrorCodes.USER_NOT_EXIST
+                error_msg='user not exists',
+                error_code=ErrorCodes.USER_NOT_EXISTS
             )
         if nickname:
             user.nickname = nickname
@@ -125,6 +201,7 @@ class UserHandler:
             'sex': user.sex,
             'email': user.email,
             'point': user.point,
+            'is_verified': user.is_verified,
         }
         Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)

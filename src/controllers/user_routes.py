@@ -22,6 +22,24 @@ from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
 
+@app.route('/verify', methods=['GET'])
+@PayloadUtils.validate()
+def verify(payload):
+    result = UserHandler.verify(
+        verify_token=payload.get('token')
+    )
+    return ResponseHandler.package_result(result=result)
+
+
+@app.route('/resend-verify', methods=['POST'])
+@PayloadUtils.validate(PayloadSchema.RESEND_VERIFY)
+def resend_verify(payload):
+    result = UserHandler.resend_verify(
+        username=payload['username']
+    )
+    return ResponseHandler.package_result(result=result)
+
+
 @app.route('/sign-up', methods=['POST'])
 @PayloadUtils.validate(PayloadSchema.SIGN_UP)
 def sign_up(payload):

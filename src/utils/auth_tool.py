@@ -34,7 +34,7 @@ class AuthTool:
             def wrapper(*args, **kwargs):
                 token = request.headers.get('Authorization')
                 if not token:
-                    raise ValidationError(error_code=ErrorCodes.token_missing,
+                    raise ValidationError(error_code=ErrorCodes.TOKEN_MISSING,
                                           error_msg='token missing')
                 token_content = cls.decode_access_token(token=token)
                 id_ = token_content.get('id')
@@ -42,7 +42,7 @@ class AuthTool:
                     User.id == id_
                 ).first()
                 if not user:
-                    raise ValidationError(error_code=ErrorCodes.USER_NOT_EXIST,
+                    raise ValidationError(error_code=ErrorCodes.USER_NOT_EXISTS,
                                           error_msg='user not exist')
                 return method(*args, **kwargs, user=user)
 
