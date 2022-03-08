@@ -25,7 +25,9 @@ class ErrorCodes:
     INVALID_TOKEN = 1004  # 無效授權
     TOKEN_EXPIRED = 1005  # 授權逾時
     TOKEN_MISSING = 1006  # headers 未帶授權
-    VERIFY_TOKEN_NOT_FOUND = 1007  # 驗證資訊不在
+    VERIFY_TOKEN_NOT_EXISTS = 1007  # 驗證token不存在
+    RESET_PASSWORD_TOKEN_NOT_EXISTS = 1007  # 重設密碼token不存在
+    RESET_PASSWORD_TOKEN_INVALIDATE = 1008  # 重設密碼token錯誤
 
     PAYLOAD_ERROR = 2001  # 參數錯誤
-    DATA_NOT_EXIST = 2022  # 資料不存在
+    DATA_NOT_EXISTS = 2022  # 資料不存在

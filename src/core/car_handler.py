@@ -36,7 +36,7 @@ class CarHandler:
         if not car:
             raise NotFoundError(
                 error_msg='data not exists',
-                error_code=ErrorCodes.DATA_NOT_EXIST
+                error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         return car
 

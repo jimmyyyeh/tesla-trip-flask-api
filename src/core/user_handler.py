@@ -18,6 +18,8 @@
 from secrets import token_hex
 from threading import Thread
 
+from sqlalchemy import or_
+
 from app import app, db, config
 from tesla_trip_common.models import User
 from utils.auth_tool import AuthTool
@@ -32,7 +34,7 @@ class UserHandler:
     @staticmethod
     def _send_verify_mail(email, id_):
         verify_token = token_hex(16)
-        RedisHandler.set_verify_token(
+        RedisHandler.set_verify_user(
             verify_token=verify_token,
             id_=id_
         )
@@ -40,7 +42,7 @@ class UserHandler:
                 <h1>歡迎註冊</h1>
                 <body>
                     <p>歡迎您註冊Tesla Trip，請點選以下連結以進行驗證:</p>
-                    <a href='{config['API_DOMAIN']}/verify?token={verify_token}'>驗證連結</a>
+                    <a href='{config['WEB_DOMAIN']}/verify/{verify_token}'>驗證連結</a>
                 </body>
                 """
         with app.app_context():
@@ -52,20 +54,20 @@ class UserHandler:
 
     @staticmethod
     def verify(verify_token):
-        id_ = RedisHandler.get_verify_token(
+        id_ = RedisHandler.get_verify_user(
             verify_token=verify_token
         )
         if not id_:
             raise ValidationError(
-                error_msg='verify token not found',
-                error_code=ErrorCodes.VERIFY_TOKEN_NOT_FOUND
+                error_msg='verify token not exists',
+                error_code=ErrorCodes.VERIFY_TOKEN_NOT_EXISTS
             )
         user = User.query.filter(
             User.id == id_
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='username not exists',
+                error_msg='user not exists',
                 error_code=ErrorCodes.USER_NOT_EXISTS
             )
         user.is_verified = True
@@ -79,7 +81,7 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='username not exists',
+                error_msg='user not exists',
                 error_code=ErrorCodes.USER_NOT_EXISTS
             )
         thread = Thread(
@@ -93,7 +95,8 @@ class UserHandler:
     def sign_up(cls, username, password, nickname, email, birthday, sex):
 
         user = User.query.filter(
-            User.username == username
+            or_(User.username == username,
+                User.email == email)
         ).first()
         if user:
             raise ValidationError(
@@ -222,3 +225,68 @@ class UserHandler:
             'refresh_token': refresh_token
         })
         return result
+
+    @staticmethod
+    def _send_reset_password_mail(email, id_):
+        reset_token = token_hex(16)
+        RedisHandler.set_reset_password(
+            reset_token=reset_token,
+            id_=id_,
+        )
+        html = f"""
+                <h1>重設密碼</h1>
+                <body>
+                    <p>親愛的Tesla Trip用戶您好，請點選以下連結以進行重置密碼:</p>
+                    <a href='{config['WEB_DOMAIN']}/resetPassword/{reset_token}'>重設密碼連結</a>
+                </body>
+                """
+        with app.app_context():
+            MailHandler.send_mail(
+                title='Tesla Trip 忘記密碼',
+                recipients=[email],
+                html=html
+            )
+
+    @classmethod
+    def request_reset_password(cls, email):
+        user = User.query.filter(
+            User.email == email
+        ).first()
+        if not user:
+            raise NotFoundError(
+                error_msg='user not exists',
+                error_code=ErrorCodes.USER_NOT_EXISTS
+            )
+        thread = Thread(
+            target=cls._send_reset_password_mail,
+            args=(email, user.id)
+        )
+        thread.start()
+        return True
+
+    @staticmethod
+    def reset_password(reset_token, username, password):
+        id_ = RedisHandler.get_reset_password(
+            reset_token=reset_token
+        )
+        if not id_:
+            raise ValidationError(
+                error_msg='reset password token not exists',
+                error_code=ErrorCodes.RESET_PASSWORD_TOKEN_NOT_EXISTS
+            )
+        user = User.query.filter(
+            User.id == id_
+        ).first()
+        if not user:
+            raise NotFoundError(
+                error_msg='user not exists',
+                error_code=ErrorCodes.USER_NOT_EXISTS
+            )
+        if user.username != username:
+            raise NotFoundError(
+                error_msg='reset password token invalidated',
+                error_code=ErrorCodes.RESET_PASSWORD_TOKEN_INVALIDATE
+            )
+        user.password = AuthTool.encrypt_password(password=password)
+        db.session.commit()
+        return True

@@ -22,11 +22,11 @@ from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
 
-@app.route('/verify', methods=['GET'])
-@PayloadUtils.validate()
+@app.route('/verify', methods=['POST'])
+@PayloadUtils.validate(PayloadSchema.VERIFY)
 def verify(payload):
     result = UserHandler.verify(
-        verify_token=payload.get('token')
+        verify_token=payload['token']
     )
     return ResponseHandler.package_result(result=result)
 
@@ -90,5 +90,25 @@ def update_profile(user, payload):
 def refresh_token(payload):
     result = UserHandler.refresh_token(
         refresh_token=payload['refresh_token'],
+    )
+    return ResponseHandler.package_result(result=result)
+
+
+@app.route('/request-reset-password', methods=['POST'])
+@PayloadUtils.validate(PayloadSchema.REQUEST_RESET_PASSWORD)
+def request_reset_password(payload):
+    result = UserHandler.request_reset_password(
+        email=payload['email'],
+    )
+    return ResponseHandler.package_result(result=result)
+
+
+@app.route('/reset-password', methods=['POST'])
+@PayloadUtils.validate(PayloadSchema.RESET_PASSWORD)
+def reset_password(payload):
+    result = UserHandler.reset_password(
+        reset_token=payload['token'],
+        username=payload['username'],
+        password=payload['password']
     )
     return ResponseHandler.package_result(result=result)

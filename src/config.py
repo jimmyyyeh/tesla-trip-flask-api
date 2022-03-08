@@ -21,6 +21,7 @@ import os
 class Config:
     ENVIRONMENT = os.environ.get('ENVIRONMENT', 'develop')
     API_DOMAIN = os.environ['API_DOMAIN']
+    WEB_DOMAIN = os.environ['WEB_DOMAIN']
 
     # mysql
     DB_NAME = os.environ['DB_NAME']

@@ -60,9 +60,23 @@ class PayloadSchema:
         'sex': And(str, lambda x: x in Const.Sex.get_elements()),
     }, ignore_extra_keys=True)
 
+    VERIFY = Schema({
+        'token': str,
+    })
+
     RESEND_VERIFY = Schema({
         'username': str,
     }, ignore_extra_keys=True)
+
+    REQUEST_RESET_PASSWORD = Schema({
+        'email': Regex(_EMAIL_PATTERN),
+    }, ignore_extra_keys=True)
+
+    RESET_PASSWORD = Schema({
+        'token': str,
+        'username': str,
+        'password': str,
+    })
 
     UPDATE_PROFILE = Schema({
         Optional('email'): Or(Regex(_EMAIL_PATTERN), None),

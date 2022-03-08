@@ -20,22 +20,41 @@ from app import redis_instance
 
 class RedisKey:
     @staticmethod
-    def verify_token(verify_token):
-        return f'verify_token:{verify_token}'
+    def verify_user(verify_token):
+        return f'verify_user:{verify_token}'
+
+    @staticmethod
+    def reset_password(reset_token):
+        return f'reset_password:{reset_token}'
 
 
 class RedisHandler:
     @staticmethod
-    def set_verify_token(verify_token, id_):
-        key = RedisKey.verify_token(
+    def set_verify_user(verify_token, id_):
+        key = RedisKey.verify_user(
             verify_token=verify_token
         )
         redis_instance.set(key, value=id_, ex=60 * 5)
 
     @staticmethod
-    def get_verify_token(verify_token):
-        key = RedisKey.verify_token(
+    def get_verify_user(verify_token):
+        key = RedisKey.verify_user(
             verify_token=verify_token
+        )
+        value = redis_instance.get(key)
+        return value
+
+    @staticmethod
+    def set_reset_password(reset_token, id_):
+        key = RedisKey.reset_password(
+            reset_token=reset_token
+        )
+        redis_instance.set(key, value=id_, ex=60 * 5)
+
+    @staticmethod
+    def get_reset_password(reset_token):
+        key = RedisKey.reset_password(
+            reset_token=reset_token
         )
         value = redis_instance.get(key)
         return value
