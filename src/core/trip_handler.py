@@ -16,7 +16,7 @@
 """
 from datetime import datetime, timedelta
 
-from sqlalchemy import func
+from sqlalchemy import func, and_
 
 from app import db
 from tesla_trip_common.models import Trip, Car, SuperCharger, TripRate
@@ -25,13 +25,13 @@ from utils.tools import Tools
 
 class TripHandler:
     @staticmethod
-    def get_trips(user_id, page, per_page, charger, start, end, model, spec):
+    def get_trips(user_id, is_my_trip, page, per_page, charger, start, end, model, spec):
         now_ = datetime.now()
         filter_ = [
-            Trip.create_datetime >= now_ - timedelta(days=365)
+            Trip.create_datetime >= now_ - timedelta(days=365),
         ]
         # 限制近一年 避免資料太多
-        if user_id:
+        if is_my_trip:
             filter_.append(Trip.user_id == user_id)
         if charger:
             filter_.append(SuperCharger.id == charger)
@@ -51,6 +51,13 @@ class TripHandler:
             TripRate.trip_id
         ).subquery()
 
+        is_rate = db.session.query(
+            TripRate.id.label('is_rate'),
+            TripRate.trip_id.label('trip_id')
+        ).filter(
+            TripRate.user_id == user_id
+        ).subquery()
+
         trips = db.session.query(
             Trip.id,
             Trip.mileage,
@@ -64,20 +71,20 @@ class TripHandler:
             Trip.charge,
             Trip.fee,
             Trip.trip_date,
-            TripRate.id.label('trip_rate_id'),
             trip_rate_count.c.trip_rate_count,
+            is_rate.c.is_rate,
             Car.model,
             Car.spec,
             Car.manufacture_date,
             SuperCharger.name,
-        ).outerjoin(
-            TripRate, TripRate.trip_id == Trip.id,
         ).outerjoin(
             Car, Car.id == Trip.car_id
         ).outerjoin(
             SuperCharger, SuperCharger.id == Trip.charger_id
         ).outerjoin(
             trip_rate_count, trip_rate_count.c.trip_id == Trip.id
+        ).outerjoin(
+            is_rate, is_rate.c.trip_id == Trip.id
         ).filter(
             *filter_
         ).order_by(
@@ -109,7 +116,7 @@ class TripHandler:
                 'car': f'{trip.model}/{trip.spec}/{trip.trip_date.strftime("%F")}',
                 'charger': trip.name,
                 'trip_rate_count': trip.trip_rate_count,
-                'is_rate': True if trip.trip_rate_id else False
+                'is_rate': True if trip.is_rate else False
             }
             Tools.serialize_result(dict_=result)
             results.append(result)

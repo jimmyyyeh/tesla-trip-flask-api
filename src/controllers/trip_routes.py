@@ -22,13 +22,13 @@ from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
 
-@app.route('/trip/<int:user_id>', methods=['GET'])
 @app.route('/trip', methods=['GET'])
 @AuthTool.sign_in()
 @PayloadUtils.validate()
-def get_trip(user, payload, user_id=None):
+def get_trip(user, payload):
     result, pager = TripHandler.get_trips(
-        user_id=user_id,
+        user_id=user.id,
+        is_my_trip=int(payload.get('is_my_trip', 0)),
         page=int(payload.get('page', 1)),
         per_page=int(payload.get('per_page', 10)),
         charger=payload.get('charger'),
