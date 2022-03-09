@@ -16,8 +16,10 @@
 """
 from datetime import datetime, timedelta
 
+from sqlalchemy import func
+
 from app import db
-from tesla_trip_common.models import Trip, Car, SuperCharger
+from tesla_trip_common.models import Trip, Car, SuperCharger, TripRate
 from utils.tools import Tools
 
 
@@ -41,6 +43,14 @@ class TripHandler:
             filter_.append(Car.model.like(f'%{model}%'))
         if spec:
             filter_.append(Car.spec.like(f'%{spec}%'))
+
+        trip_rate_count = db.session.query(
+            TripRate.trip_id.label('trip_id'),
+            func.count(TripRate.trip_id).label('trip_rate_count')
+        ).group_by(
+            TripRate.trip_id
+        ).subquery()
+
         trips = db.session.query(
             Trip.id,
             Trip.mileage,
@@ -54,14 +64,20 @@ class TripHandler:
             Trip.charge,
             Trip.fee,
             Trip.trip_date,
+            TripRate.id.label('trip_rate_id'),
+            trip_rate_count.c.trip_rate_count,
             Car.model,
             Car.spec,
             Car.manufacture_date,
             SuperCharger.name,
         ).outerjoin(
+            TripRate, TripRate.trip_id == Trip.id,
+        ).outerjoin(
             Car, Car.id == Trip.car_id
         ).outerjoin(
             SuperCharger, SuperCharger.id == Trip.charger_id
+        ).outerjoin(
+            trip_rate_count, trip_rate_count.c.trip_id == Trip.id
         ).filter(
             *filter_
         ).order_by(
@@ -91,7 +107,9 @@ class TripHandler:
                 'fee': trip.fee,
                 'trip_date': trip.trip_date,
                 'car': f'{trip.model}/{trip.spec}/{trip.trip_date.strftime("%F")}',
-                'charger': trip.name
+                'charger': trip.name,
+                'trip_rate_count': trip.trip_rate_count,
+                'is_rate': True if trip.trip_rate_id else False
             }
             Tools.serialize_result(dict_=result)
             results.append(result)
@@ -119,3 +137,24 @@ class TripHandler:
             db.session.add(trip_)
             user.point += 1
         db.session.commit()
+        return True
+
+    @staticmethod
+    def update_user_trip_rate(user_id, trip_id):
+        filter_ = [
+            TripRate.trip_id == trip_id,
+            TripRate.user_id == user_id
+        ]
+        trip_rate = TripRate.query.filter(
+            *filter_
+        )
+        if not trip_rate.first():
+            trip_rate = TripRate(
+                user_id=user_id,
+                trip_id=trip_id
+            )
+            db.session.add(trip_rate)
+        else:
+            trip_rate.delete()
+        db.session.commit()
+        return True

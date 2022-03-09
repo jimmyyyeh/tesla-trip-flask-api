@@ -118,3 +118,7 @@ class PayloadSchema:
     CREATE_TRIP = Schema(
         And(list, lambda x: list(map(PayloadSchema.TRIP.validate, x))),
     )
+
+    UPDATE_TRIP_RATE = Schema({
+        'trip_id': int
+    })
