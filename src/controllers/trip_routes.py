@@ -56,7 +56,7 @@ def create_trip(user, payload):
 @PayloadUtils.validate(PayloadSchema.UPDATE_TRIP_RATE)
 def update_trip_rate(user, payload):
     result = TripHandler.update_user_trip_rate(
-        user_id=user.id,
+        user=user,
         trip_id=payload['trip_id']
     )
     return ResponseHandler.package_result(result=result)

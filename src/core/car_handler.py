@@ -16,7 +16,9 @@
 """
 
 from app import db
+from core.point_handler import PointHandler
 from tesla_trip_common.models import Car, Trip, TripRate
+from utils.const import Const
 from utils.error_codes import ErrorCodes
 from utils.errors import NotFoundError
 from utils.tools import Tools
@@ -35,7 +37,7 @@ class CarHandler:
         )
         if not car:
             raise NotFoundError(
-                error_msg='data not exists',
+                error_msg='data is not exists',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         return car
@@ -94,11 +96,20 @@ class CarHandler:
 
     @staticmethod
     def _deduct_point(user, trips, trip_rates):
-        total_deduct = trips.count() + trip_rates.count() * 2
-        if user.point < total_deduct:
+        origin_point = user.point
+        total_deduct = PointHandler.get_deduct_point(trips=trips, trip_rates=trip_rates)
+        if origin_point < total_deduct:
             user.point = 0
+            deduct_point = origin_point
         else:
             user.point -= total_deduct
+            deduct_point = user.point
+        PointHandler.point_change_log(
+            user_id=user.id,
+            point=origin_point,
+            change=deduct_point,
+            type_=Const.PointLogType.DELETE_CAR,
+        )
 
     @classmethod
     def _get_delete_car_info(cls, user_id, car_id):
@@ -124,6 +135,6 @@ class CarHandler:
 
     @classmethod
     def get_car_deduct_point(cls, user, car_id):
-        cars, trips, trip_rates = cls._get_delete_car_info(user_id=user.id, car_id=car_id)
-        total_deduct = trips.count() + trip_rates.count() * 2
+        _, trips, trip_rates = cls._get_delete_car_info(user_id=user.id, car_id=car_id)
+        total_deduct = PointHandler.get_deduct_point(trips=trips, trip_rates=trip_rates)
         return {'total': total_deduct}
