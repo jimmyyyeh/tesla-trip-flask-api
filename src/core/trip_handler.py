@@ -16,7 +16,7 @@
 """
 from datetime import datetime, timedelta
 
-from sqlalchemy import func, and_
+from sqlalchemy import func
 
 from app import db
 from tesla_trip_common.models import Trip, Car, SuperCharger, TripRate
@@ -113,7 +113,7 @@ class TripHandler:
                 'charge': trip.charge,
                 'fee': trip.fee,
                 'trip_date': trip.trip_date,
-                'car': f'{trip.model}/{trip.spec}/{trip.trip_date.strftime("%F")}',
+                'car': f'{trip.model}-{trip.spec}({Tools.date_to_season(trip.trip_date)})',
                 'charger': trip.name,
                 'trip_rate_count': trip.trip_rate_count,
                 'is_rate': True if trip.is_rate else False

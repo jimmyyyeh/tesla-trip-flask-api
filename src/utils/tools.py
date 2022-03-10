@@ -35,3 +35,10 @@ class Tools:
                 dict_[key] = value.strftime('%F %X')
             elif isinstance(value, date):
                 dict_[key] = value.strftime('%F')
+
+    @staticmethod
+    def date_to_season(date_):
+        year = date_.year
+        month = date_.month
+        season = int(month % 3.1 + 1)
+        return f'{year}Q{season}'
