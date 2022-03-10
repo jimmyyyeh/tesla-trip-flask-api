@@ -16,7 +16,7 @@
 """
 
 from app import db
-from tesla_trip_common.models import Car, Trip
+from tesla_trip_common.models import Car, Trip, TripRate
 from utils.error_codes import ErrorCodes
 from utils.errors import NotFoundError
 from utils.tools import Tools
@@ -94,9 +94,15 @@ class CarHandler:
 
     @classmethod
     def delete_car(cls, user_id, car_id):
-        Trip.query.filter(
+        trips = Trip.query.filter(
             Trip.car_id == car_id
-        ).delete()
-        car = cls._query_car(user_id=user_id, car_id=car_id)
-        car.delete()
+        )
+        trip_ids = {trip.id for trip in trips}
+        trip_rates = TripRate.query.filter(
+            TripRate.trip_id.in_(trip_ids)
+        )
+        trip_rates.delete()
+        trips.delete()
+        cars = cls._query_car(user_id=user_id, car_id=car_id)
+        cars.delete()
         db.session.commit()
