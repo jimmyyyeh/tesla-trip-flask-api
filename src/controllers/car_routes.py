@@ -64,7 +64,17 @@ def update_car(user, car_id, payload):
 @AuthTool.sign_in()
 def delete_car(user, car_id):
     result = CarHandler.delete_car(
-        user_id=user.id,
+        user=user,
+        car_id=car_id,
+    )
+    return ResponseHandler.package_result(result=result)
+
+
+@app.route('/car/deduct-point/<int:car_id>', methods=['GET'])
+@AuthTool.sign_in()
+def get_car_deduct_point(user, car_id):
+    result = CarHandler.get_car_deduct_point(
+        user=user,
         car_id=car_id,
     )
     return ResponseHandler.package_result(result=result)

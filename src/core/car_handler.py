@@ -92,8 +92,16 @@ class CarHandler:
         Tools.serialize_result(dict_=result)
         return result
 
+    @staticmethod
+    def _deduct_point(user, trips, trip_rates):
+        total_deduct = trips.count() + trip_rates.count() * 2
+        if user.point < total_deduct:
+            user.point = 0
+        else:
+            user.point -= total_deduct
+
     @classmethod
-    def delete_car(cls, user_id, car_id):
+    def _get_delete_car_info(cls, user_id, car_id):
         trips = Trip.query.filter(
             Trip.car_id == car_id
         )
@@ -101,8 +109,21 @@ class CarHandler:
         trip_rates = TripRate.query.filter(
             TripRate.trip_id.in_(trip_ids)
         )
+        cars = cls._query_car(user_id=user_id, car_id=car_id)
+        return cars, trips, trip_rates
+
+    @classmethod
+    def delete_car(cls, user, car_id):
+        cars, trips, trip_rates = cls._get_delete_car_info(user_id=user.id, car_id=car_id)
         trip_rates.delete()
         trips.delete()
-        cars = cls._query_car(user_id=user_id, car_id=car_id)
         cars.delete()
+        cls._deduct_point(user=user, trips=trips, trip_rates=trip_rates)
         db.session.commit()
+        return True
+
+    @classmethod
+    def get_car_deduct_point(cls, user, car_id):
+        cars, trips, trip_rates = cls._get_delete_car_info(user_id=user.id, car_id=car_id)
+        total_deduct = trips.count() + trip_rates.count() * 2
+        return {'total': total_deduct}
