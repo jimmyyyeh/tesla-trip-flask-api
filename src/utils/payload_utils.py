@@ -122,3 +122,7 @@ class PayloadSchema:
     UPDATE_TRIP_RATE = Schema({
         'trip_id': int
     })
+
+    ENCODE_PRODUCT = Schema({
+        'product_id': int,
+    })

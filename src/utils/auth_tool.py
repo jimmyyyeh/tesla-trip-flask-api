@@ -28,7 +28,7 @@ from utils.error_codes import ErrorCodes
 
 class AuthTool:
     @classmethod
-    def sign_in(cls):
+    def sign_in(cls, roles=None):
         def real_decorator(method, **kwargs):
             @wraps(method)
             def wrapper(*args, **kwargs):
@@ -44,6 +44,11 @@ class AuthTool:
                 if not user:
                     raise ValidationError(error_code=ErrorCodes.USER_NOT_EXISTS,
                                           error_msg='user not exist')
+                if roles and user.role not in roles:
+                    raise ValidationError(
+                        error_msg='role invalidate',
+                        error_code=ErrorCodes.ROLE_INVALIDATE
+                    )
                 return method(*args, **kwargs, user=user)
 
             return wrapper
