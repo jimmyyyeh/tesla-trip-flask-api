@@ -25,10 +25,12 @@ from utils.redis_handler import RedisHandler
 
 class ProductHandler:
     @staticmethod
-    def get_products(product_id):
+    def get_products(user, product_id, is_self):
         filter_ = []
         if product_id:
             filter_.append(Product.id == product_id)
+        if is_self:
+            filter_.append(SuperCharger.id == user.charger_id)
         products = db.session.query(
             Product.id,
             Product.name,

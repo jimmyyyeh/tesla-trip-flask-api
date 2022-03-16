@@ -123,6 +123,8 @@ class UserHandler:
             'email': user.email,
             'point': user.point,
             'is_verified': user.is_verified,
+            'role': user.role,
+            'charger_id': user.charger_id
         }
         Tools.serialize_result(dict_=result)
         thread = Thread(
@@ -157,7 +159,8 @@ class UserHandler:
             'email': user.email,
             'point': user.point,
             'is_verified': user.is_verified,
-            'role': user.role
+            'role': user.role,
+            'charger_id': user.charger_id
         }
         Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)
@@ -179,7 +182,8 @@ class UserHandler:
             'email': user.email,
             'point': user.point,
             'is_verified': user.is_verified,
-            'role': user.role
+            'role': user.role,
+            'charger_id': user.charger_id
         }
         Tools.serialize_result(dict_=result)
         return result
@@ -208,7 +212,8 @@ class UserHandler:
             'email': user.email,
             'point': user.point,
             'is_verified': user.is_verified,
-            'role': user.role
+            'role': user.role,
+            'charger_id': user.charger_id
         }
         Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)
