@@ -157,6 +157,7 @@ class UserHandler:
             'email': user.email,
             'point': user.point,
             'is_verified': user.is_verified,
+            'role': user.role
         }
         Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)
@@ -178,6 +179,7 @@ class UserHandler:
             'email': user.email,
             'point': user.point,
             'is_verified': user.is_verified,
+            'role': user.role
         }
         Tools.serialize_result(dict_=result)
         return result
@@ -206,6 +208,7 @@ class UserHandler:
             'email': user.email,
             'point': user.point,
             'is_verified': user.is_verified,
+            'role': user.role
         }
         Tools.serialize_result(dict_=result)
         token = AuthTool.get_access_token(**result)
