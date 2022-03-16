@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 """
       ┏┓       ┏┓
     ┏━┛┻━━━━━━━┛┻━┓
@@ -13,6 +14,7 @@
         ┗┻┛    ┗┻┛
     God Bless,Never Bug
 """
+
 from app import config
 
 import base64

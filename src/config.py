@@ -22,6 +22,7 @@ class Config:
     ENVIRONMENT = os.environ.get('ENVIRONMENT', 'develop')
     API_DOMAIN = os.environ['API_DOMAIN']
     WEB_DOMAIN = os.environ['WEB_DOMAIN']
+    STATIC_PATH = '/app/static/'
 
     # mysql
     DB_NAME = os.environ['DB_NAME']

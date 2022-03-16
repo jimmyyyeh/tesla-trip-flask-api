@@ -15,11 +15,11 @@
     God Bless,Never Bug
 """
 
-from controllers.administrative_district_routes import *
-from controllers.car_routes import *
-from controllers.charger_routes import *
-from controllers.image_routes import *
-from controllers.product_routes import *
-from controllers.trip_routes import *
-from controllers.user_routes import *
-from controllers.qrcode_routes import *
+from app import app
+from core.image_handler import ImageHandler
+
+
+@app.route('/image/<string:filename>', methods=['GET'])
+def get_image(filename):
+    result = ImageHandler.get_image(filename=filename)
+    return result
