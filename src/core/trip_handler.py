@@ -96,7 +96,8 @@ class TripHandler:
             Trip.create_datetime.desc()
         ).paginate(
             page=page,
-            per_page=per_page
+            per_page=per_page,
+            error_out=False
         )
         pager = Tools.make_pager(
             page=page,
