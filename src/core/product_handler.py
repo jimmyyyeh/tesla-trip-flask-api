@@ -21,11 +21,12 @@ from utils.const import Const
 from utils.error_codes import ErrorCodes
 from utils.errors import NotFoundError, ValidationError
 from utils.redis_handler import RedisHandler
+from utils.tools import Tools
 
 
 class ProductHandler:
     @staticmethod
-    def get_products(user, product_id, is_self):
+    def get_products(user, product_id, is_self, page, per_page):
         filter_ = []
         if product_id:
             filter_.append(Product.id == product_id)
@@ -36,22 +37,89 @@ class ProductHandler:
             Product.name,
             Product.stock,
             Product.point,
+            Product.is_launched,
             SuperCharger.name.label('charger')
         ).join(
             SuperCharger, SuperCharger.id == Product.charger_id
         ).filter(
             *filter_
-        ).all()
+        ).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+        pager = Tools.make_pager(
+            page=page,
+            per_page=per_page,
+            objs=products
+        )
+
         results = list()
-        for product in products:
+        for product in products.items:
             result = {
                 'id': product.id,
                 'name': product.name,
                 'stock': product.stock,
-                'point': product.point
+                'point': product.point,
+                'is_launched': product.is_launched
             }
             results.append(result)
-        return results
+        return results, pager
+
+    @staticmethod
+    def create_product(user, name, stock, point, is_launched):
+        product = Product(
+            name=name,
+            stock=stock,
+            point=point,
+            is_launched=is_launched,
+            charger_id=user.charger_id,
+        )
+        db.session.add(product)
+        db.session.commit()
+        result = {
+            'id': product.id,
+            'name': product.name,
+            'stock': product.stock,
+            'point': product.point,
+            'is_launched': product.is_launched
+        }
+        return result
+
+    @staticmethod
+    def _query_product(charger_id, product_id):
+        product = Product.query.filter(
+            Product.id == product_id,
+            Product.charger_id == charger_id
+        )
+        if not product.first():
+            raise NotFoundError(
+                error_msg='product does not exists',
+                error_code=ErrorCodes.DATA_NOT_EXISTS
+            )
+        return product
+
+    @classmethod
+    def update_product(cls, user, product_id, name, stock, point, is_launched):
+        product = cls._query_product(charger_id=user.charger_id, product_id=product_id)
+        product = product.first()
+        if name:
+            product.name = name
+        if stock:
+            product.stock = stock
+        if point:
+            product.point = point
+        if is_launched:
+            product.is_launched = is_launched
+        db.session.commit()
+        return True
+
+    @classmethod
+    def delete_product(cls, user, product_id):
+        product = cls._query_product(charger_id=user.charger_id, product_id=product_id)
+        product.delete()
+        db.session.commit()
+        return True
 
     @staticmethod
     def _redeem_log(seller_id, buyer_id, product_id):

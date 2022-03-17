@@ -126,3 +126,17 @@ class PayloadSchema:
     ENCODE_PRODUCT = Schema({
         'product_id': int,
     })
+
+    CREATE_PRODUCT = Schema({
+        'name': str,
+        'stock': int,
+        'point': int,
+        'is_launched': bool
+    })
+
+    UPDATE_PRODUCT = Schema({
+        Optional('name'): str,
+        Optional('stock'): int,
+        Optional('point'): int,
+        Optional('is_launched'): bool
+    })
