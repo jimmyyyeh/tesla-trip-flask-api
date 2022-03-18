@@ -14,6 +14,8 @@
         ┗┻┛    ┗┻┛
     God Bless,Never Bug
 """
+import base64
+from pathlib import Path
 
 from app import db
 from core.point_handler import PointHandler
@@ -21,6 +23,7 @@ from tesla_trip_common.models import Car, Trip, TripRate
 from utils.const import Const
 from utils.error_codes import ErrorCodes
 from utils.errors import NotFoundError
+from utils.pattern import Pattern
 from utils.tools import Tools
 
 
@@ -52,27 +55,44 @@ class CarHandler:
                 'id': car.id,
                 'model': car.model,
                 'spec': car.spec,
-                'manufacture_date': car.manufacture_date
+                'manufacture_date': car.manufacture_date,
+                'has_image': car.has_image
             }
             Tools.serialize_result(dict_=result)
             results.append(result)
         return results
 
     @staticmethod
-    def create_car(user_id, model, spec, manufacture_date):
+    def _save_file(file, id_):
+        if not file:
+            return None
+        _, extension, _, base64_str = Pattern.BASE64.search(file).groups()
+        path = './static/image/car'
+        filename = f'{id_}.{extension}'
+        Path(path).mkdir(parents=True, exist_ok=True)
+        with open(f'{path}/{filename}', 'wb') as f:
+            f.write(base64.decodebytes(base64_str.encode()))
+        return filename
+
+    @classmethod
+    def create_car(cls, user_id, model, spec, manufacture_date, file):
         car = Car(
             user_id=user_id,
             model=model,
             spec=spec,
-            manufacture_date=manufacture_date
+            manufacture_date=manufacture_date,
+            has_image=True if file else False
         )
         db.session.add(car)
+        db.session.flush()
+        cls._save_file(file=file, id_=car.id)
         db.session.commit()
         result = {
             'id': car.id,
             'model': car.model,
             'spec': car.spec,
-            'manufacture_date': car.manufacture_date
+            'manufacture_date': car.manufacture_date,
+            'has_image': car.has_image
         }
         Tools.serialize_result(dict_=result)
         return result
@@ -89,7 +109,8 @@ class CarHandler:
             'id': car.id,
             'model': car.model,
             'spec': car.spec,
-            'manufacture_date': car.manufacture_date
+            'manufacture_date': car.manufacture_date,
+            'has_image': car.has_image
         }
         Tools.serialize_result(dict_=result)
         return result

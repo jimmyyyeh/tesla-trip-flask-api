@@ -41,7 +41,8 @@ def create_car(user, payload):
         user_id=user.id,
         model=payload['model'],
         spec=payload['spec'],
-        manufacture_date=payload['manufacture_date']
+        manufacture_date=payload['manufacture_date'],
+        file=payload.get('file')
     )
     return ResponseHandler.package_result(result=result)
 
