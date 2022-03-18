@@ -53,6 +53,7 @@ class CarHandler:
         for car in cars:
             result = {
                 'id': car.id,
+                'car': f'{car.model}-{car.spec}({Tools.date_to_season(car.manufacture_date)})',
                 'model': car.model,
                 'spec': car.spec,
                 'manufacture_date': car.manufacture_date,
@@ -147,8 +148,10 @@ class CarHandler:
     @classmethod
     def delete_car(cls, user, car_id):
         cars, trips, trip_rates = cls._get_delete_car_info(user_id=user.id, car_id=car_id)
-        trip_rates.delete()
-        trips.delete()
+        if trip_rates.all():
+            trip_rates.delete()
+        if trips.all():
+            trips.delete()
         cars.delete()
         cls._deduct_point(user=user, trips=trips, trip_rates=trip_rates)
         db.session.commit()
