@@ -26,12 +26,16 @@ from utils.tools import Tools
 
 class ProductHandler:
     @staticmethod
-    def get_products(user, product_id, is_self, page, per_page):
+    def get_products(user, product_id, is_self, charger_id, name, page, per_page):
         filter_ = []
         if product_id:
             filter_.append(Product.id == product_id)
         if is_self:
             filter_.append(SuperCharger.id == user.charger_id)
+        if charger_id:
+            filter_.append(SuperCharger.id == charger_id)
+        if name:
+            filter_.append(Product.name.like(f'%{name}%'))
         products = db.session.query(
             Product.id,
             Product.name,

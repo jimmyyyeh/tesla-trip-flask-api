@@ -32,6 +32,8 @@ def get_product(user, payload, product_id=None):
         user=user,
         product_id=product_id,
         is_self=int(payload.get('is_self', 0)),
+        charger_id=payload.get('charger_id'),
+        name=payload.get('name'),
         page=int(payload.get('page', 1)),
         per_page=int(payload.get('per_page', 10)),
     )
