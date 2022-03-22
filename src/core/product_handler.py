@@ -144,6 +144,20 @@ class ProductHandler:
             )
         buyer_id = content['user_id']
         product_id = content['id']
+        product = Product.query.filter(
+            Product.id == product_id
+        ).first()
+        if not product:
+            raise NotFoundError(
+                error_msg='product does not exists',
+                error_code=ErrorCodes.DATA_NOT_EXISTS
+            )
+        if product.stock == 0:
+            raise ValidationError(
+                error_msg='insufficient product stock',
+                error_code=ErrorCodes.INSUFFICIENT_PRODUCT_STOCK
+            )
+        product.stock -= 1
         product_point = content['point']
         seller = user
         buyer = User.query.filter(

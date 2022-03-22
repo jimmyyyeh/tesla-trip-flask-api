@@ -34,3 +34,4 @@ class ErrorCodes:
     DATA_NOT_EXISTS = 2022  # 資料不存在
 
     INSUFFICIENT_POINT = 3001  # 點數不足
+    INSUFFICIENT_PRODUCT_STOCK = 3002  # 庫存不足
