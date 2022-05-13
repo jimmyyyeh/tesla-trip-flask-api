@@ -25,7 +25,7 @@ from utils.error_codes import ErrorCodes
 from utils.errors import NotFoundError
 from utils.tools import Tools
 
-from tesla_trip_common.models import Trip, Car, SuperCharger, TripRate, User
+from tesla_trip_common.models import Trip, Car, SuperCharger, TripRate, User, CarModel
 
 
 class TripHandler:
@@ -45,9 +45,9 @@ class TripHandler:
         if end:
             filter_.append(Trip.end.like(f'%{end}%'))
         if model:
-            filter_.append(Car.model.like(f'%{model}%'))
+            filter_.append(CarModel.model.like(f'%{model}%'))
         if spec:
-            filter_.append(Car.spec.like(f'%{spec}%'))
+            filter_.append(CarModel.spec.like(f'%{spec}%'))
 
         trip_rate_count = db.session.query(
             TripRate.trip_id.label('trip_id'),
@@ -78,12 +78,14 @@ class TripHandler:
             Trip.trip_date,
             trip_rate_count.c.trip_rate_count,
             is_rate.c.is_rate,
-            Car.model,
-            Car.spec,
+            CarModel.model,
+            CarModel.spec,
             Car.manufacture_date,
             SuperCharger.name,
         ).outerjoin(
             Car, Car.id == Trip.car_id
+        ).join(
+            CarModel, CarModel.id == Car.car_model_id,
         ).outerjoin(
             SuperCharger, SuperCharger.id == Trip.charger_id
         ).outerjoin(
