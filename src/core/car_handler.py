@@ -19,7 +19,7 @@ from pathlib import Path
 
 from app import db
 from core.point_handler import PointHandler
-from tesla_trip_common.models import Car, Trip, TripRate
+from tesla_trip_common.models import Car, CarModel, Trip, TripRate
 from utils.const import Const
 from utils.error_codes import ErrorCodes
 from utils.errors import NotFoundError
@@ -162,3 +162,16 @@ class CarHandler:
         _, trips, trip_rates = cls._get_delete_car_info(user_id=user.id, car_id=car_id)
         total_deduct = PointHandler.get_deduct_point(trips=trips, trip_rates=trip_rates)
         return {'total': total_deduct}
+
+    @classmethod
+    def get_car_models(cls):
+        car_models = CarModel.query.all()
+        results = list()
+        for car_model in car_models:
+            result = {
+                'id': car_model.id,
+                'model': car_model.model,
+                'spec': car_model.spec,
+            }
+            results.append(result)
+        return results

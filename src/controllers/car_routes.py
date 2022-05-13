@@ -79,3 +79,9 @@ def get_car_deduct_point(user, car_id):
         car_id=car_id,
     )
     return ResponseHandler.package_result(result=result)
+
+
+@app.route('/car/car-model', methods=['GET'])
+def get_car_model():
+    result = CarHandler.get_car_models()
+    return ResponseHandler.package_result(result=result)
