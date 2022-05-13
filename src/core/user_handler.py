@@ -42,7 +42,7 @@ class UserHandler:
                 <h1>歡迎註冊</h1>
                 <body>
                     <p>歡迎您註冊Tesla Trip，請點選以下連結以進行驗證:</p>
-                    <a href='{config['WEB_DOMAIN']}/verify/{verify_token}'>驗證連結</a>
+                    <a href='{config['WEB_DOMAIN']}/#/verify/{verify_token}'>驗證連結</a>
                 </body>
                 """
         with app.app_context():
@@ -246,7 +246,7 @@ class UserHandler:
                 <h1>重設密碼</h1>
                 <body>
                     <p>親愛的Tesla Trip用戶您好，請點選以下連結以進行重置密碼:</p>
-                    <a href='{config['WEB_DOMAIN']}/resetPassword/{reset_token}'>重設密碼連結</a>
+                    <a href='{config['WEB_DOMAIN']}/#/resetPassword/{reset_token}'>重設密碼連結</a>
                 </body>
                 """
         with app.app_context():
