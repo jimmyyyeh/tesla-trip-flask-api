@@ -9,6 +9,7 @@ services:
     image: tesla-trip-api
     volumes:
       - ./src:/app:rw
+      - ~/tesla_trip_api/image:/app/static/image
     env_file: .env
     networks:
       - tesla-trip-proxy
