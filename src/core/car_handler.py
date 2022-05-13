@@ -77,7 +77,7 @@ class CarHandler:
             return None
         _, extension, _, base64_str = Pattern.BASE64.search(file).groups()
         path = './static/image/car'
-        filename = f'{id_}.{extension}'
+        filename = f'{id_}.jpg'
         Path(path).mkdir(parents=True, exist_ok=True)
         with open(f'{path}/{filename}', 'wb') as f:
             f.write(base64.decodebytes(base64_str.encode()))
