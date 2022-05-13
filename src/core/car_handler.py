@@ -35,12 +35,20 @@ class CarHandler:
         ]
         if car_id:
             filter_.append(Car.id == car_id)
-        car = Car.query.filter(
+        car = db.session.query(
+            Car.id,
+            Car.manufacture_date,
+            Car.has_image,
+            CarModel.model,
+            CarModel.spec,
+        ).join(
+            CarModel, CarModel.id == Car.car_model_id
+        ).filter(
             *filter_
         )
         if not car:
             raise NotFoundError(
-                error_msg='data does not exists',
+                error_msg='car does not exists',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         return car
@@ -77,10 +85,19 @@ class CarHandler:
 
     @classmethod
     def create_car(cls, user_id, model, spec, manufacture_date, file):
+        car_model = CarModel.query.filter(
+            CarModel.model == model,
+            CarModel.spec == spec
+        ).first()
+        
+        if not car_model:
+            raise NotFoundError(
+                error_msg='car model does not exists',
+                error_code=ErrorCodes.DATA_NOT_EXISTS
+            )
         car = Car(
             user_id=user_id,
-            model=model,
-            spec=spec,
+            car_model_id=car_model.id,
             manufacture_date=manufacture_date,
             has_image=True if file else False
         )
@@ -90,8 +107,8 @@ class CarHandler:
         db.session.commit()
         result = {
             'id': car.id,
-            'model': car.model,
-            'spec': car.spec,
+            'model': car_model.model,
+            'spec': car_model.spec,
             'manufacture_date': car.manufacture_date,
             'has_image': car.has_image
         }
@@ -100,16 +117,31 @@ class CarHandler:
 
     @classmethod
     def update_car(cls, user_id, car_id, model, spec, manufacture_date):
-        car = cls._query_car(user_id=user_id, car_id=car_id)
-        car = car.first()
-        car.model = model
-        car.spec = spec
+        car = Car.query.filter(
+            Car.id == car_id,
+            Car.user_id == user_id
+        ).first()
+        if not car:
+            raise NotFoundError(
+                error_msg='car does not exists',
+                error_code=ErrorCodes.DATA_NOT_EXISTS
+            )
+        car_model = CarModel.query.filter(
+            CarModel.model == model,
+            CarModel.spec == spec
+        ).first()
+        if not car_model:
+            raise NotFoundError(
+                error_msg='car model does not exists',
+                error_code=ErrorCodes.DATA_NOT_EXISTS
+            )
+        car.car_model_id = car_model.id
         car.manufacture_date = manufacture_date
         db.session.commit()
         result = {
             'id': car.id,
-            'model': car.model,
-            'spec': car.spec,
+            'model': car_model.model,
+            'spec': car_model.spec,
             'manufacture_date': car.manufacture_date,
             'has_image': car.has_image
         }
