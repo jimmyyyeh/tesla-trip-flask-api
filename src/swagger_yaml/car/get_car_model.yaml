@@ -1,0 +1,75 @@
+取得車輛型號列表
+取得車輛型號列表
+---
+tags:
+  - 旅途里程
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+  - in: path
+    name: car_id
+    require: true
+    type: integer
+responses:
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        data:
+          type: array
+          description: List of cars
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: ID of car model
+              model:
+                type: string
+                description: Model
+              spec:
+                type: string
+                description: Spec
+        pager:
+          type: object
+          properties:
+            page:
+              type: integer
+              description: Current page
+              default: 1
+            per_page:
+              type: integer
+              description: Item count of per page
+              default: 10
+            total:
+              type: integer
+              description: Total items num
+            pages:
+              type: integer
+              description: Total pages
+      example:
+          {
+            "data":
+              [{
+                "id": 1,
+                "model": "Model3",
+                "spec": "Long Range",
+              }],
+            "pager": {
+              "page": 1,
+              "pages": 5,
+              "per_page": 10,
+              "total": 50
+            }
+          }

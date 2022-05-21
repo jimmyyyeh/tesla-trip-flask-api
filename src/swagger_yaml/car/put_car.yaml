@@ -1,0 +1,109 @@
+更新車輛
+使用者更新車輛資料
+---
+tags:
+  - 愛車資料
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+  - in: body
+    required: true
+    schema:
+      required:
+        - model
+        - spec
+      properties:
+        model:
+          type: string
+        spec:
+          type: string
+        manufacture_date:
+          type: string
+      example:
+        {
+          "model": "Model3",
+          "spec": "Long Range",
+          "manufacture_date": "2021-09-11"
+        }
+responses:
+  1001:
+    description: Username not exists
+  1002:
+    description: User invalidate
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  2001:
+    description: Payload error
+  2002:
+    description: Data not exists
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        data:
+          type: array
+          description: List of cars
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: ID of super charger
+              car:
+                type: string
+                description: Car display name
+              model:
+                type: string
+                description: Car model
+              spec:
+                type: string
+                description: Car spec
+              manufacture_date:
+                type: string
+                description: Car manufacture date
+              has_image:
+                type: boolean
+                description: Has image or not
+        pager:
+          type: object
+          properties:
+            page:
+              type: integer
+              description: Current page
+              default: 1
+            per_page:
+              type: integer
+              description: Item count of per page
+              default: 10
+            total:
+              type: integer
+              description: Total items num
+            pages:
+              type: integer
+              description: Total pages
+      example:
+        {
+          "data":
+            {
+              "id": 1,
+              "model": "Model3",
+              "spec": "Long Range",
+              "manufacture_date": "2021-09-11",
+              "has_image": False
+            },
+          "pager": {
+            "page": 1,
+            "pages": 5,
+            "per_page": 10,
+            "total": 50
+          }
+        }

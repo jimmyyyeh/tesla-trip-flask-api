@@ -1,0 +1,34 @@
+驗證使用者
+驗證註冊使用者信箱連結
+---
+tags:
+  - 授權
+parameters:
+  - in: body
+    required: true
+    schema:
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: Verify token from email
+      example:
+        {
+          "token": "1234567890",
+        }
+responses:
+  1001:
+    description: User not exists
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        success:
+          type: boolean
+      example:
+        {"success": True}

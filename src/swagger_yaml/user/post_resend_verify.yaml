@@ -1,0 +1,32 @@
+請求驗證連結
+發送驗證連結請求
+---
+tags:
+  - 授權
+parameters:
+  - in: body
+    required: true
+    schema:
+      required:
+        - username
+      properties:
+      username:
+          type: string
+          description: Username which need to resend link
+      example: {"username": "jimmy"}
+
+responses:
+  1001:
+    description: User not exists
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        success:
+          type: boolean
+      example:
+        { "success": True }

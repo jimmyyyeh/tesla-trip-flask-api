@@ -1,0 +1,44 @@
+更新Token
+使用者更新Token
+---
+tags:
+  - 授權
+parameters:
+  - in: body
+    required: true
+    schema:
+      required:
+        - refresh_token
+      properties:
+        refresh_token:
+          type: string
+      example:
+        {
+          "refresh_token": "1234567890",
+        }
+responses:
+  1003:
+    description: Username already exists
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        token:
+          type: string
+        refresh_token:
+          type: string
+      example:
+        {
+          "token": "1234567890",
+          "refresh_token": "0987654321"
+        }

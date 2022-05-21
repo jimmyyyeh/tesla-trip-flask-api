@@ -1,0 +1,64 @@
+取得個人資料
+使用者取得個人詳細資料
+---
+tags:
+  - 個人檔案
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+responses:
+  1001:
+    description: Username not exists
+  1002:
+    description: User invalidate
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        id:
+          type: integer
+          description: User ID
+        username:
+          type: string
+        nickname:
+          type: string
+        birthday:
+          type: string
+        email:
+          type: string
+        point:
+          type: integer
+        is_verified:
+          type: boolean
+          description: Is user verified or not
+        role:
+          type: integer
+          description: general=1 charger owner=2
+        charger_id:
+          type: integer
+          description: Charger ID which user own
+      example:
+        {
+          "birthday": "1996-07-19",
+          "charger_id": null,
+          "email": "tesla@gmail.com",
+          "id": 1,
+          "is_verified": True,
+          "nickname": "jimmy",
+          "point": 10,
+          "role": 1,
+          "username": "jimmy"
+        }

@@ -48,7 +48,6 @@ class Config:
     SALT = os.environ['SALT']
 
     # mail
-
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
@@ -56,3 +55,18 @@ class Config:
     MAIL_USERNAME = os.environ['MAIL_USERNAME']
     MAIL_PASSWORD = os.environ['MAIL_PASSWORD']
     MAIL_DEFAULT_SENDER = ('Tesla Trip', MAIL_USERNAME)
+
+    # swagger
+    SWAGGER = {
+        'title': 'tesla trip api',
+        'description': 'tesla trip api doc',
+        'version': '0.0.1',
+        'termsOfService': '',
+        'hide_top_bar': True,
+        'specs': [
+            {
+                'endpoint': 'api_spec',
+                'route': '/api_spec.json',
+            }
+        ],
+    }

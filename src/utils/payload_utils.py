@@ -91,6 +91,7 @@ class PayloadSchema:
         'model': str,
         'spec': str,
         'manufacture_date': str,
+        Optional('file'): str,
     }, ignore_extra_keys=True)
 
     UPDATE_CAR = Schema({

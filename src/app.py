@@ -23,6 +23,7 @@ from flask_compress import Compress
 from flask_cors import CORS
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
+from flasgger import Swagger
 
 app = Flask(__name__)
 
@@ -35,6 +36,7 @@ Compress(app)  # 壓縮
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 mail = Mail(app)
+swagger = Swagger(app)
 
 redis_instance = redis.StrictRedis(
     host=config['REDIS_HOST'],

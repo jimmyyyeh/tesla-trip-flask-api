@@ -1,0 +1,95 @@
+新增旅程
+使用者新增旅程
+---
+tags:
+  - 旅途里程
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+  - in: body
+    required: true
+    schema:
+      required:
+        - car_id
+        - mileage
+        - consumption
+        - total
+        - start
+        - end
+        - start_battery_level
+        - end_battery_level
+        - is_charge
+        - trip_date
+      properties:
+          car_id:
+            type: integer
+            description: ID of car
+          consumption:
+            type: string
+            description: Average electricity consumed
+          start:
+            type: string
+            description: Where trip start
+          start_battery_level:
+            type: integer
+            description: Battery level when start
+          end:
+            type: boolean
+            description: Where trip end
+          end_battery_level:
+            type: integer
+            description: Battery level when end
+          fee:
+            type: integer
+            description: Charge fee(if is charged)
+          is_charge:
+            type: boolean
+            description: Charge or not
+          mileage:
+            type: integer
+            description: The mileage of car when battery if full
+          total:
+            type: number
+            description: Electricity total used
+          trip_date:
+            type: string
+            description: Trip date
+      example:
+        {
+          "consumption": 65.0,
+          "end": "臺北市, 大安區",
+          "end_battery_level": 52,
+          "car_id": 3,
+          "is_charge": false,
+          "mileage": 402,
+          "start": "新北市, 林口區",
+          "start_battery_level": 56,
+          "total": 2.0,
+          "trip_date": "2022-05-17",
+        }
+responses:
+  1001:
+    description: Username not exists
+  1002:
+    description: User invalidate
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        success:
+          type: boolean
+      example:
+        { "success": True }

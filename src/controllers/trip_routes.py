@@ -15,6 +15,8 @@
     God Bless,Never Bug
 """
 
+from flasgger import swag_from
+
 from app import app
 from core.trip_handler import TripHandler
 from utils.auth_tool import AuthTool
@@ -23,6 +25,7 @@ from utils.response_handler import ResponseHandler
 
 
 @app.route('/trip', methods=['GET'])
+@swag_from('../swagger_yaml/trip/get_trip.yaml')
 @AuthTool.sign_in()
 @PayloadUtils.validate()
 def get_trip(user, payload):
@@ -41,6 +44,7 @@ def get_trip(user, payload):
 
 
 @app.route('/trip', methods=['POST'])
+@swag_from('../swagger_yaml/trip/post_trip.yaml')
 @AuthTool.sign_in()
 @PayloadUtils.validate(PayloadSchema.CREATE_TRIP)
 def create_trip(user, payload):
@@ -52,6 +56,7 @@ def create_trip(user, payload):
 
 
 @app.route('/trip-rate', methods=['POST'])
+@swag_from('../swagger_yaml/trip/post_trip_rate.yaml')
 @AuthTool.sign_in()
 @PayloadUtils.validate(PayloadSchema.UPDATE_TRIP_RATE)
 def update_trip_rate(user, payload):

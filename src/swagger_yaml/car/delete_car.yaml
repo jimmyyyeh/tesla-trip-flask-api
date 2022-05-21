@@ -1,0 +1,30 @@
+刪除車輛
+使用者刪除車輛
+---
+tags:
+  - 愛車資料
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+  - in: path
+    name: car_id
+    require: true
+    type: int
+responses:
+  1001:
+    description: User not exists
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        success:
+          type: boolean
+      example:
+        {"success": True}

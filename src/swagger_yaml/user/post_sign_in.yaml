@@ -1,0 +1,81 @@
+使用者登入
+使用者登入
+---
+tags:
+  - 授權
+parameters:
+  - in: body
+    required: true
+    schema:
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      example:
+        {
+          "username": "jimmy",
+          "password": "1234567890"
+        }
+responses:
+  1001:
+    description: Username not exists
+  1002:
+    description: User invalidate
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        id:
+          type: integer
+          description: User ID
+        username:
+          type: string
+        nickname:
+          type: string
+        birthday:
+          type: string
+        email:
+          type: string
+        point:
+          type: integer
+        is_verified:
+          type: boolean
+          description: Is user verified or not
+        role:
+          type: integer
+          description: general=1 charger owner=2
+        charger_id:
+          type: integer
+          description: Charger ID which user own
+        token:
+          type: string
+        refresh_token:
+          type: string
+      example:
+        {
+          "birthday": "1996-07-19",
+          "charger_id": null,
+          "email": "tesla@gmail.com",
+          "id": 1,
+          "is_verified": True,
+          "nickname": "jimmy",
+          "point": 10,
+          "role": 1,
+          "username": "jimmy",
+          "token": "1234567890",
+          "refresh_token": "0987654321",
+        }

@@ -1,0 +1,100 @@
+超充站列表
+取得超充站列表(資料來源: teslaguru)
+---
+tags:
+  - 旅途里程
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+responses:
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        data:
+          type: array
+          description: List of super charger
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: ID of super charger
+              name:
+                type: string
+                description: Super charger name
+              city:
+                type: string
+                description: Super charger locate city
+              tpc:
+                type: integer
+                description: nums of tpc charger
+              ccs2:
+                type: integer
+                description: nums of tpc charger
+              floor:
+                type: string
+                description: charger locate floor
+              business_hours:
+                type: string
+                description: charger business hours
+              park_fee:
+                type: string
+                description: parking fee
+              charger_fee:
+                type: string
+                description: charger fee
+              version:
+                type: string
+                description: charger version
+        pager:
+          type: object
+          properties:
+            page:
+              type: integer
+              description: Current page
+              default: 1
+            per_page:
+              type: integer
+              description: Item count of per page
+              default: 10
+            total:
+              type: integer
+              description: Total items num
+            pages:
+              type: integer
+              description: Total pages
+      example:
+        {
+          "data": [
+            {
+              "business_hours": "全天開放",
+              "ccs2": 1,
+              "charger_fee": "11/5.5",
+              "city": "台北",
+              "floor": "2F",
+              "id": 1,
+              "name": "松山",
+              "park_fee": "免費",
+              "tpc": 1,
+              "version": "string"
+            }
+          ],
+          "pager": {
+            "page": 1,
+            "pages": 5,
+            "per_page": 10,
+            "total": 50
+          }
+        }

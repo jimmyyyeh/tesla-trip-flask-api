@@ -1,0 +1,83 @@
+使用者註冊
+使用者註冊
+---
+tags:
+  - 授權
+parameters:
+  - in: body
+    required: true
+    schema:
+      required:
+        - username
+        - password
+        - birthday
+        - email
+        - sex
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        nickname:
+          type: string
+        email:
+          type: string
+        birthday:
+          type: string
+        sex:
+          type: integer
+          description: male=1 female=2
+      example:
+        {
+          "birthday": "1996-07-19",
+          "email": "tesla@gmail.com",
+          "nickname": "jimmy",
+          "password": "1234567890",
+          "sex": 1,
+          "username": "jimmy"
+        }
+responses:
+  1003:
+    description: Username already exists
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        id:
+          type: integer
+          description: User ID
+        username:
+          type: string
+        nickname:
+          type: string
+        birthday:
+          type: string
+        email:
+          type: string
+        point:
+          type: integer
+        is_verified:
+          type: boolean
+          description: Is user verified or not
+        role:
+          type: integer
+          description: general=1 charger owner=2
+        charger_id:
+          type: integer
+          description: Charger ID which user own
+      example:
+        {
+          "birthday": "1996-07-19",
+          "charger_id": null,
+          "email": "tesla@gmail.com",
+          "id": 1,
+          "is_verified": False,
+          "nickname": "jimmy",
+          "point": 10,
+          "role": 1,
+          "username": "jimmy"
+        }

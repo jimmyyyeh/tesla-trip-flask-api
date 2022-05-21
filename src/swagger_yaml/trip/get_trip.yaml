@@ -1,0 +1,128 @@
+取得旅途
+取得旅途列表
+---
+tags:
+- 旅途里程
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+  - in: query
+    properties:
+      is_my_trip:
+        type: boolean
+        description: Only return user trip
+      page:
+        type: int
+      per_age:
+        type: int
+      charger:
+        type: string
+        description: Charger name
+      start:
+        type: string
+        description: Where trip start
+      end:
+        type: string
+        description: Where trip to
+      model:
+        type: string
+        description: Model name
+      spec:
+        type: string
+        description: Spec name
+responses:
+  1001:
+    description: Username not exists
+  1002:
+    description: User invalidate
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  2001:
+    description: Payload error
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        id:
+          type: integer
+          description: Trip ID
+        car:
+          type: string
+        charger:
+          type: string
+          description: Carget name(if is charged)
+        consumption:
+          type: string
+          description: Average electricity consumed
+        start:
+          type: string
+          description: Where trip start
+        start_battery_level:
+          type: integer
+          description: Battery level when start
+        end:
+          type: boolean
+          description: Where trip end
+        end_battery_level:
+          type: integer
+          description: Battery level when end
+        fee:
+          type: integer
+          description: Charge fee(if is charged)
+        is_charge:
+          type: boolean
+          description: Charge or not
+        is_rate:
+          type: boolean
+          description: If the trip has been rated
+        mileage:
+          type: integer
+          description: The mileage of car when battery if full
+        total:
+          type: number
+          description: Electricity total used
+        trip_date:
+          type: string
+          description: Trip date
+        trip_rate_count:
+          type: integer
+          description: If the trip has been rated
+      example:
+        {
+          "data": [
+            {
+              "car": "Model 3-Standard Range Plus(2022Q2)",
+              "charge": null,
+              "charger": null,
+              "consumption": 65.0,
+              "end": "臺北市, 大安區",
+              "end_battery_level": 52,
+              "fee": null,
+              "id": 3,
+              "is_charge": false,
+              "is_rate": false,
+              "mileage": 402,
+              "start": "新北市, 林口區",
+              "start_battery_level": 56,
+              "total": 2.0,
+              "trip_date": "2022-05-17",
+              "trip_rate_count": null
+            }
+          ],
+          "pager": {
+            "page": 1,
+            "pages": 1,
+            "per_page": 10,
+            "total": 3
+          }
+        }
+

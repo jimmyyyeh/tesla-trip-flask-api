@@ -1,0 +1,41 @@
+旅途里程評分
+使用者評分旅途里程
+---
+tags:
+  - 旅途里程
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+  - in: body
+    required: true
+    schema:
+      required:
+        - trip_id
+      properties:
+        trip_id:
+          type: integer
+      example:
+        {
+          "trip_id": 1,
+        }
+
+responses:
+  1001:
+    description: User not exists
+  2001:
+    description: Payload error
+  2002:
+    description: Data not exists
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        success:
+          type: boolean
+      example:
+        {"success": True}

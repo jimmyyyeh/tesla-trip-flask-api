@@ -15,6 +15,8 @@
     God Bless,Never Bug
 """
 
+from flasgger import swag_from
+
 from app import app
 from core.administrative_district_handler import AdministrativeDistrictHandler
 from utils.auth_tool import AuthTool
@@ -22,6 +24,7 @@ from utils.response_handler import ResponseHandler
 
 
 @app.route('/administrative-district', methods=['GET'])
+@swag_from('../swagger_yaml/administrative_district/get_administrative_district.yaml')
 @AuthTool.sign_in()
 def get_administrative_district(user):
     result = AdministrativeDistrictHandler.get_administrative_districts()

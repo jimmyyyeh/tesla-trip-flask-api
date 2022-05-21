@@ -1,0 +1,78 @@
+台灣行政區域列表
+取得台灣行政區域(資料來源: 維基百科)
+---
+tags:
+  - 旅途里程
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Session token
+responses:
+  1004:
+    description: Invalid token
+  1005:
+    description: Token expired
+  1006:
+    description: Token missing
+  500:
+    description: Base error
+  200:
+    description: Successful
+    schema:
+      properties:
+        data:
+          type: array
+          description: List of administrative direct
+          items:
+            type: object
+            properties:
+              city name:
+                description: List of administrative direct in specific city
+                type: array
+                items:
+                  tpye: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of administrative direct
+                    area:
+                      type: string
+                      description: Name of administrative direct
+        pager:
+          type: object
+          properties:
+            page:
+              type: integer
+              description: Current page
+              default: 1
+            per_page:
+              type: integer
+              description: Item count of per page
+              default: 10
+            total:
+              type: integer
+              description: Total items num
+            pages:
+              type: integer
+              description: Total pages
+      example:
+        {
+          "data": [
+            {
+              "city name": [
+                {
+                  "area": "台北市",
+                  "id": 1
+                }
+              ]
+            }
+          ],
+          "pager": {
+            "page": 1,
+            "pages": 5,
+            "per_page": 10,
+            "total": 50
+          }
+        }
