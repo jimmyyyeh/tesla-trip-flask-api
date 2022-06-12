@@ -80,7 +80,7 @@ def delete_product(user, product_id):
 
 
 @app.route('/redeem-product/<string:token>', methods=['POST'])
-@AuthTool.sign_in(roles=[Const.Role.CHARGER_OWNER])
+@AuthTool.sign_in(Const.Role.CHARGER_OWNER)
 def redeem_product(user, token):
     result = ProductHandler.redeem_product(
         user=user,
