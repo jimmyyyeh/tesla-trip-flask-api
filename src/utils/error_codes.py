@@ -26,9 +26,9 @@ class ErrorCodes:
     TOKEN_EXPIRED = 1005  # 授權逾時
     TOKEN_MISSING = 1006  # headers 未帶授權
     VERIFY_TOKEN_NOT_EXISTS = 1007  # 驗證token不存在
-    RESET_PASSWORD_TOKEN_NOT_EXISTS = 1007  # 重設密碼token不存在
-    RESET_PASSWORD_TOKEN_INVALIDATE = 1008  # 重設密碼token錯誤
-    ROLE_INVALIDATE = 1009  # 身份不符
+    RESET_PASSWORD_TOKEN_NOT_EXISTS = 1008  # 重設密碼token不存在
+    RESET_PASSWORD_TOKEN_INVALIDATE = 1009  # 重設密碼token錯誤
+    ROLE_INVALIDATE = 1010  # 身份不符
 
     PAYLOAD_ERROR = 2001  # 參數錯誤
     DATA_NOT_EXISTS = 2022  # 資料不存在
