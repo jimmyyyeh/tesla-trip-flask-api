@@ -182,15 +182,27 @@ class TripHandler:
             )
 
     @staticmethod
-    def _deduct_user_point(trip_author):
+    def _deduct_user_point(user, trip_author):
+        user_origin_point = user.point
         author_origin_point = trip_author.point
         trip_author.point -= 1
-        PointHandler.point_change_log(
+        DBHandler.create_point_log(
+            db=db,
             user_id=trip_author.id,
             point=author_origin_point,
             type_=Const.PointLogType.TRIP_DISLIKE,
             change=1
         )
+
+        if user != trip_author:
+            user.point -= 1
+            DBHandler.create_point_log(
+                db=db,
+                user_id=user.id,
+                point=user_origin_point,
+                type_=Const.PointLogType.DELETE_RATE_TRIP,
+                change=1
+            )
 
     @classmethod
     def update_user_trip_rate(cls, user, trip_id):
@@ -222,7 +234,7 @@ class TripHandler:
             cls._rise_user_point(user=user, trip_author=trip_author)
         else:
             trip_rate.delete()
-            cls._deduct_user_point(trip_author=trip_author)
+            cls._deduct_user_point(user=user, trip_author=trip_author)
 
         db.session.commit()
         return True
