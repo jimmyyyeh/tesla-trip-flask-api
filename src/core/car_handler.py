@@ -107,6 +107,7 @@ class CarHandler:
         db.session.commit()
         result = {
             'id': car.id,
+            'car': f'{car_model.model}-{car_model.spec}({Tools.date_to_season(car.manufacture_date)})',
             'model': car_model.model,
             'spec': car_model.spec,
             'manufacture_date': car.manufacture_date,
