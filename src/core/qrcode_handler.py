@@ -34,7 +34,7 @@ class QRCodeHandler:
         content = RedisHandler.get_redeem_product(token=token)
         if not content:
             raise NotFoundError(
-                error_msg='content does not exists',
+                error_msg='content does not exist',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         return content
@@ -46,7 +46,7 @@ class QRCodeHandler:
         ).first()
         if not product:
             raise NotFoundError(
-                error_msg='content does not exists',
+                error_msg='content does not exist',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         content = {

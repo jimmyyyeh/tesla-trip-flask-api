@@ -211,7 +211,7 @@ class TripHandler:
         ).first()
         if not trip:
             raise NotFoundError(
-                error_msg='trip does not exists',
+                error_msg='trip does not exist',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         trip_author = User.query.filter(

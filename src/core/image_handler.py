@@ -29,7 +29,7 @@ class ImageHandler:
             return send_file(file_path)
         else:
             raise NotFoundError(
-                error_msg='image does not exists',
+                error_msg='image does not exist',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
 

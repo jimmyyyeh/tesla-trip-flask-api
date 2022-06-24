@@ -48,7 +48,7 @@ class CarHandler:
         )
         if not car:
             raise NotFoundError(
-                error_msg='car does not exists',
+                error_msg='car does not exist',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         return car
@@ -92,7 +92,7 @@ class CarHandler:
         
         if not car_model:
             raise NotFoundError(
-                error_msg='car model does not exists',
+                error_msg='car model does not exist',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         car = Car(
@@ -124,7 +124,7 @@ class CarHandler:
         ).first()
         if not car:
             raise NotFoundError(
-                error_msg='car does not exists',
+                error_msg='car does not exist',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         car_model = CarModel.query.filter(
@@ -133,7 +133,7 @@ class CarHandler:
         ).first()
         if not car_model:
             raise NotFoundError(
-                error_msg='car model does not exists',
+                error_msg='car model does not exist',
                 error_code=ErrorCodes.DATA_NOT_EXISTS
             )
         car.car_model_id = car_model.id

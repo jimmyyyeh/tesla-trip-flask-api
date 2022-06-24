@@ -67,7 +67,7 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='user does not exists',
+                error_msg='user does not exist',
                 error_code=ErrorCodes.USER_NOT_EXISTS
             )
         user.is_verified = True
@@ -82,7 +82,7 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='user does not exists',
+                error_msg='user does not exist',
                 error_code=ErrorCodes.USER_NOT_EXISTS
             )
         thread = Thread(
@@ -142,7 +142,7 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='user does not exists',
+                error_msg='user does not exist',
                 error_code=ErrorCodes.USER_NOT_EXISTS
             )
         if not AuthTool.decrypt_password(db_password=user.password, password=password):
@@ -195,7 +195,7 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='user does not exists',
+                error_msg='user does not exist',
                 error_code=ErrorCodes.USER_NOT_EXISTS
             )
         if nickname:
@@ -263,7 +263,7 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='user does not exists',
+                error_msg='user does not exist',
                 error_code=ErrorCodes.USER_NOT_EXISTS
             )
         thread = Thread(
@@ -288,7 +288,7 @@ class UserHandler:
         ).first()
         if not user:
             raise NotFoundError(
-                error_msg='user does not exists',
+                error_msg='user does not exist',
                 error_code=ErrorCodes.USER_NOT_EXISTS
             )
         if user.username != username:
