@@ -15,16 +15,18 @@
     God Bless,Never Bug
 """
 
+from flask import Blueprint
 from flasgger import swag_from
 
-from app import app
 from core.user_handler import UserHandler
 from utils.auth_tool import AuthTool
 from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
+user_app = Blueprint('user_app', __name__)
 
-@app.route('/verify', methods=['POST'])
+
+@user_app.route('/verify', methods=['POST'])
 @swag_from('../swagger_yaml/user/post_verify.yaml')
 @PayloadUtils.validate(PayloadSchema.VERIFY)
 def verify(payload):
@@ -34,7 +36,7 @@ def verify(payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/resend-verify', methods=['POST'])
+@user_app.route('/resend-verify', methods=['POST'])
 @swag_from('../swagger_yaml/user/post_resend_verify.yaml')
 @PayloadUtils.validate(PayloadSchema.RESEND_VERIFY)
 def resend_verify(payload):
@@ -44,7 +46,7 @@ def resend_verify(payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/sign-up', methods=['POST'])
+@user_app.route('/sign-up', methods=['POST'])
 @swag_from('../swagger_yaml/user/post_sign_up.yaml')
 @PayloadUtils.validate(PayloadSchema.SIGN_UP)
 def sign_up(payload):
@@ -59,7 +61,7 @@ def sign_up(payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/sign-in', methods=['POST'])
+@user_app.route('/sign-in', methods=['POST'])
 @swag_from('../swagger_yaml/user/post_sign_in.yaml')
 @PayloadUtils.validate(PayloadSchema.SIGN_IN)
 def sign_in(payload):
@@ -70,7 +72,7 @@ def sign_in(payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/profile', methods=['GET'])
+@user_app.route('/profile', methods=['GET'])
 @swag_from('../swagger_yaml/user/get_profile.yaml')
 @AuthTool.sign_in()
 def get_profile(user):
@@ -80,7 +82,7 @@ def get_profile(user):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/profile', methods=['PUT'])
+@user_app.route('/profile', methods=['PUT'])
 @AuthTool.sign_in()
 @PayloadUtils.validate(PayloadSchema.UPDATE_PROFILE)
 @swag_from('../swagger_yaml/user/put_profile.yaml')
@@ -93,7 +95,7 @@ def update_profile(user, payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/refresh-token', methods=['POST'])
+@user_app.route('/refresh-token', methods=['POST'])
 @PayloadUtils.validate(PayloadSchema.REFRESH_TOKEN)
 @swag_from('../swagger_yaml/user/post_refresh_token.yaml')
 def refresh_token(payload):
@@ -103,7 +105,7 @@ def refresh_token(payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/request-reset-password', methods=['POST'])
+@user_app.route('/request-reset-password', methods=['POST'])
 @PayloadUtils.validate(PayloadSchema.REQUEST_RESET_PASSWORD)
 @swag_from('../swagger_yaml/user/post_request_reset_password.yaml')
 def request_reset_password(payload):
@@ -113,7 +115,7 @@ def request_reset_password(payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/reset-password', methods=['POST'])
+@user_app.route('/reset-password', methods=['POST'])
 @PayloadUtils.validate(PayloadSchema.RESET_PASSWORD)
 @swag_from('../swagger_yaml/user/post_reset_password.yaml')
 def reset_password(payload):

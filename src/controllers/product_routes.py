@@ -15,16 +15,19 @@
     God Bless,Never Bug
 """
 
-from app import app
+from flask import Blueprint
+
 from core.product_handler import ProductHandler
 from utils.auth_tool import AuthTool
 from utils.const import Const
 from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
+product_app = Blueprint('product', __name__)
 
-@app.route('/product/<int:product_id>', methods=['GET'])
-@app.route('/product', methods=['GET'])
+
+@product_app.route('/<int:product_id>', methods=['GET'])
+@product_app.route('', methods=['GET'])
 @PayloadUtils.validate()
 @AuthTool.sign_in()
 def get_product(user, payload, product_id=None):
@@ -40,7 +43,7 @@ def get_product(user, payload, product_id=None):
     return ResponseHandler.package_result(result=result, pager=pager)
 
 
-@app.route('/product', methods=['POST'])
+@product_app.route('', methods=['POST'])
 @PayloadUtils.validate(PayloadSchema.CREATE_PRODUCT)
 @AuthTool.sign_in([Const.Role.CHARGER_OWNER])
 def create_product(user, payload):
@@ -54,7 +57,7 @@ def create_product(user, payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/product/<int:product_id>', methods=['PUT'])
+@product_app.route('/<int:product_id>', methods=['PUT'])
 @PayloadUtils.validate(PayloadSchema.UPDATE_PRODUCT)
 @AuthTool.sign_in([Const.Role.CHARGER_OWNER])
 def update_product(user, payload, product_id):
@@ -69,7 +72,7 @@ def update_product(user, payload, product_id):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/product/<int:product_id>', methods=['DELETE'])
+@product_app.route('/<int:product_id>', methods=['DELETE'])
 @AuthTool.sign_in([Const.Role.CHARGER_OWNER])
 def delete_product(user, product_id):
     result = ProductHandler.delete_product(
@@ -79,7 +82,7 @@ def delete_product(user, product_id):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/redeem-product/<string:token>', methods=['POST'])
+@product_app.route('/redeem-product/<string:token>', methods=['POST'])
 @AuthTool.sign_in(Const.Role.CHARGER_OWNER)
 def redeem_product(user, token):
     result = ProductHandler.redeem_product(

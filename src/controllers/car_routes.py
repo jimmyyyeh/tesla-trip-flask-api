@@ -15,17 +15,19 @@
     God Bless,Never Bug
 """
 
+from flask import Blueprint
 from flasgger import swag_from
 
-from app import app
 from core.car_handler import CarHandler
 from utils.auth_tool import AuthTool
 from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
+car_app = Blueprint('car', __name__)
 
-@app.route('/car/<int:car_id>', endpoint='get_car_with_car_id', methods=['GET'])
-@app.route('/car', endpoint='get_car_without_car_id', methods=['GET'])
+
+@car_app.route('/<int:car_id>', endpoint='get_car_with_car_id', methods=['GET'])
+@car_app.route('', endpoint='get_car_without_car_id', methods=['GET'])
 @swag_from('../swagger_yaml/car/get_car_without_id.yaml', endpoint='get_car_without_car_id')
 @swag_from('../swagger_yaml/car/get_car_with_id.yaml', endpoint='get_car_with_car_id')
 @AuthTool.sign_in()
@@ -37,7 +39,7 @@ def get_car(user, car_id=None):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/car', methods=['POST'])
+@car_app.route('', methods=['POST'])
 @swag_from('../swagger_yaml/car/post_car.yaml')
 @AuthTool.sign_in()
 @PayloadUtils.validate(PayloadSchema.CREATE_CAR)
@@ -52,7 +54,7 @@ def create_car(user, payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/car/<int:car_id>', methods=['PUT'])
+@car_app.route('/<int:car_id>', methods=['PUT'])
 @swag_from('../swagger_yaml/car/put_car.yaml')
 @AuthTool.sign_in()
 @PayloadUtils.validate(PayloadSchema.UPDATE_CAR)
@@ -67,7 +69,7 @@ def update_car(user, car_id, payload):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/car/<int:car_id>', methods=['DELETE'])
+@car_app.route('/<int:car_id>', methods=['DELETE'])
 @swag_from('../swagger_yaml/car/delete_car.yaml')
 @AuthTool.sign_in()
 def delete_car(user, car_id):
@@ -78,7 +80,7 @@ def delete_car(user, car_id):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/car/deduct-point/<int:car_id>', methods=['GET'])
+@car_app.route('/deduct-point/<int:car_id>', methods=['GET'])
 @AuthTool.sign_in()
 def get_car_deduct_point(user, car_id):
     result = CarHandler.get_car_deduct_point(
@@ -88,7 +90,7 @@ def get_car_deduct_point(user, car_id):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/car/car-model', methods=['GET'])
+@car_app.route('/car-model', methods=['GET'])
 @swag_from('../swagger_yaml/car/get_car_model.yaml')
 @AuthTool.sign_in()
 def get_car_model(user):

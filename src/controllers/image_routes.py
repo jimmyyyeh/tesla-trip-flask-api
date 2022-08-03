@@ -15,11 +15,13 @@
     God Bless,Never Bug
 """
 
-from app import app
+from flask import Blueprint
 from core.image_handler import ImageHandler
 
+image_app = Blueprint('image', __name__)
 
-@app.route('/image/<string:filename>', methods=['GET'])
+
+@image_app.route('/<string:filename>', methods=['GET'])
 def get_image(filename):
     result = ImageHandler.get_image(filename=filename)
     return result
