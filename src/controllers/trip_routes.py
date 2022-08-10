@@ -15,16 +15,18 @@
     God Bless,Never Bug
 """
 
+from flask import Blueprint
 from flasgger import swag_from
 
-from app import app
 from core.trip_handler import TripHandler
 from utils.auth_tool import AuthTool
 from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
+trip_app = Blueprint('trip', __name__)
 
-@app.route('/trip', methods=['GET'])
+
+@trip_app.route('/', methods=['GET'])
 @swag_from('../swagger_yaml/trip/get_trip.yaml')
 @AuthTool.sign_in()
 @PayloadUtils.validate()
@@ -43,7 +45,7 @@ def get_trip(user, payload):
     return ResponseHandler.package_result(result=result, pager=pager)
 
 
-@app.route('/trip', methods=['POST'])
+@trip_app.route('/', methods=['POST'])
 @swag_from('../swagger_yaml/trip/post_trip.yaml')
 @AuthTool.sign_in()
 @PayloadUtils.validate(PayloadSchema.CREATE_TRIP)
@@ -51,17 +53,5 @@ def create_trip(user, payload):
     result = TripHandler.create_trip(
         user=user,
         payload=payload
-    )
-    return ResponseHandler.package_result(result=result)
-
-
-@app.route('/trip-rate', methods=['POST'])
-@swag_from('../swagger_yaml/trip/post_trip_rate.yaml')
-@AuthTool.sign_in()
-@PayloadUtils.validate(PayloadSchema.UPDATE_TRIP_RATE)
-def update_trip_rate(user, payload):
-    result = TripHandler.update_user_trip_rate(
-        user=user,
-        trip_id=payload['trip_id']
     )
     return ResponseHandler.package_result(result=result)

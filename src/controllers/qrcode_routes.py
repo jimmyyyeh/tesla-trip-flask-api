@@ -15,14 +15,17 @@
     God Bless,Never Bug
 """
 
-from app import app
+from flask import Blueprint
+
 from core.qrcode_handler import QRCodeHandler
 from utils.auth_tool import AuthTool
 from utils.payload_utils import PayloadUtils, PayloadSchema
 from utils.response_handler import ResponseHandler
 
+qrcode_app = Blueprint('qrcode', __name__)
 
-@app.route('/qrcode/product/<string:token>', methods=['GET'])
+
+@qrcode_app.route('/product/<string:token>', methods=['GET'])
 @AuthTool.sign_in()
 def decode_product(user, token):
     result = QRCodeHandler.decode_product(
@@ -31,7 +34,7 @@ def decode_product(user, token):
     return ResponseHandler.package_result(result=result)
 
 
-@app.route('/qrcode/product', methods=['POST'])
+@qrcode_app.route('/product', methods=['POST'])
 @AuthTool.sign_in()
 @PayloadUtils.validate(PayloadSchema.ENCODE_PRODUCT)
 def encode_product(user, payload):
